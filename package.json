@@ -3,16 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@chakra-ui/react": "^1.1.5",
+    "@emotion/react": "^11.1.4",
+    "@emotion/styled": "^11.0.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "@xstate/react": "^1.2.2",
+    "framer-motion": "^3.2.2-rc.1",
     "husky": "^4.3.8",
     "lint-staged": "^10.5.3",
     "prettier": "^2.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "xstate": "^4.16.0"
   },
   "scripts": {
     "start": "react-scripts start",
