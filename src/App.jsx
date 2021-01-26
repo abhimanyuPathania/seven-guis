@@ -6,11 +6,12 @@ import LandingPage from './pages/LandingPage';
 import CounterPage from './pages/CounterPage';
 import TemperatureConverterPage from './pages/TemperatureConverterPage';
 import { ROUTES } from './commons/enums';
+import theme from './commons/theme';
 
 function App() {
   return (
     <Router>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <Navbar />
         <div>
           <Switch>
