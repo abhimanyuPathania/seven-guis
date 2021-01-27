@@ -1,7 +1,7 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, Box } from '@chakra-ui/react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-import Navbar from './components/Navbar';
+import Navbar from './components/Navbar/Navbar';
 import LandingPage from './pages/LandingPage';
 import CounterPage from './pages/CounterPage';
 import TemperatureConverterPage from './pages/TemperatureConverterPage';
@@ -13,7 +13,12 @@ function App() {
     <Router>
       <ChakraProvider theme={theme}>
         <Navbar />
-        <div>
+        <Box
+          marginTop="45px"
+          mx="auto"
+          py="8"
+          width={{ md: '90%', lg: '70%' }}
+          px={{ base: '4', sm: '6' }}>
           <Switch>
             <Route path={`/${ROUTES.counter}`} component={CounterPage} />
             <Route
@@ -22,7 +27,7 @@ function App() {
             />
             <Route component={LandingPage} />
           </Switch>
-        </div>
+        </Box>
       </ChakraProvider>
     </Router>
   );
