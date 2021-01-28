@@ -41,7 +41,6 @@ export default function LandingPage() {
             aria-label="Options"
             icon={<ChevronDownIcon />}
             size="sm"
-            // variant="outline"
           />
           <MenuList>
             {ROUTES.map((route) => {

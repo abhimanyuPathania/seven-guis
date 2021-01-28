@@ -16,8 +16,8 @@ export default function CounterPage() {
   const [current, send] = useMachine(counterMachine);
 
   return (
-    <Container centerContent>
-      <Heading>1. Counter</Heading>
+    <Box maxW="lg" mx="auto">
+      <Heading mb="6">1. Counter</Heading>
       <Box
         padding="3"
         mt="3"
@@ -52,6 +52,6 @@ export default function CounterPage() {
           </Button>
         </Stack>
       </Box>
-    </Container>
+    </Box>
   );
 }

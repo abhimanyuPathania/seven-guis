@@ -35,12 +35,12 @@ export default function TemperatureConverterPage() {
 
   return (
     <Box>
-      <Heading>2. Temperature Converter</Heading>
-      <Stack direction="row" spacing="4">
+      <Heading mb="6">2. Temperature Converter</Heading>
+      <Stack direction={{ base: 'column', md: 'row' }} spacing="4">
         <FormControl id="celsius">
           <FormLabel>Celsius</FormLabel>
           <Input
-            placeholder="Celsius"
+            placeholder="°C"
             type="number"
             value={current.context.celsius}
             onChange={handleCelsiusInput}
@@ -49,7 +49,7 @@ export default function TemperatureConverterPage() {
         <FormControl id="farenheit">
           <FormLabel>Farenheit</FormLabel>
           <Input
-            placeholder="Farenheit"
+            placeholder="°F"
             type="number"
             value={current.context.farenheit}
             onChange={handleFarenheitInput}
