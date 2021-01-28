@@ -5,7 +5,7 @@ import Navbar from './components/Navbar/Navbar';
 import LandingPage from './pages/LandingPage';
 import CounterPage from './pages/CounterPage';
 import TemperatureConverterPage from './pages/TemperatureConverterPage';
-import { ROUTES } from './commons/enums';
+import { ROUTES_MAP } from './commons/enums';
 import theme from './commons/theme';
 
 function App() {
@@ -20,9 +20,9 @@ function App() {
           width={{ md: '90%', lg: '70%' }}
           px={{ base: '4', sm: '6' }}>
           <Switch>
-            <Route path={`/${ROUTES.counter}`} component={CounterPage} />
+            <Route path={ROUTES_MAP.counter} component={CounterPage} />
             <Route
-              path={`/${ROUTES.temperatureConverter}`}
+              path={ROUTES_MAP.temperatureConverter}
               component={TemperatureConverterPage}
             />
             <Route component={LandingPage} />

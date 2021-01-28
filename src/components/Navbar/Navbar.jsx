@@ -1,17 +1,18 @@
 import {
   Link,
   useColorMode,
-  Box,
   Flex,
   MenuButton,
-  Button,
   MenuItem,
   MenuList,
   Menu,
+  IconButton,
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import DarkModeToggle from 'react-dark-mode-toggle';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 
+import Logo from '../Logo/Logo';
 import { ROUTES } from '../../commons/enums';
 
 export default function LandingPage() {
@@ -19,7 +20,7 @@ export default function LandingPage() {
 
   return (
     <Flex
-      bgColor="blue.300"
+      bgColor="teal.400"
       height="45px"
       px={{ base: 10, md: 12 }}
       pos="fixed"
@@ -29,27 +30,36 @@ export default function LandingPage() {
       w="100%"
       align="center"
       justify="space-between">
-      <Box>
-        <Link as={RouterLink} to="/">
-          Home
+      <Flex align="center">
+        <Link as={RouterLink} to="/" marginRight="4">
+          <Logo />
         </Link>
-        <Link as={RouterLink} to={`/${ROUTES.counter}`} ml="3">
-          Counter
-        </Link>
-        <Link as={RouterLink} to={`/${ROUTES.temperatureConverter}`} ml="3">
-          Temperature Converter
-        </Link>
+
         <Menu>
-          <MenuButton as={Button}>Actions</MenuButton>
+          <MenuButton
+            as={IconButton}
+            aria-label="Options"
+            icon={<ChevronDownIcon />}
+            size="sm"
+            // variant="outline"
+          />
           <MenuList>
-            <MenuItem>Download</MenuItem>
-            <MenuItem>Create a Copy</MenuItem>
-            <MenuItem>Mark as Draft</MenuItem>
-            <MenuItem>Delete</MenuItem>
-            <MenuItem>Attend a Workshop</MenuItem>
+            {ROUTES.map((route) => {
+              return (
+                <MenuItem key={route.name}>
+                  <Link
+                    as={RouterLink}
+                    to={route.path}
+                    w="100%"
+                    textDecoration="none">
+                    {route.label}
+                  </Link>
+                </MenuItem>
+              );
+            })}
           </MenuList>
         </Menu>
-      </Box>
+      </Flex>
       <DarkModeToggle
         onChange={(isDarkMode) =>
           toggleColorMode(isDarkMode ? 'dark' : 'light')
