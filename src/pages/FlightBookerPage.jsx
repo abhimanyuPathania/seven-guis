@@ -17,7 +17,15 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  Flex,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  Text,
+  useColorMode,
 } from '@chakra-ui/react';
 import ReactDatePicker from 'react-datepicker';
 
@@ -26,6 +34,7 @@ import flightBookerMachine, {
   canSubmit,
   canSetReturnDate,
   TRIP_TYPES_LIST,
+  TRIP_TYPES,
 } from '../machines/flightBooker';
 import '../components/DatePicker/datePicker.css';
 
@@ -33,6 +42,10 @@ export default function FlightBookerPage() {
   const [current, send] = useMachine(flightBookerMachine);
   const { context, value } = current;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { colorMode } = useColorMode();
+  // Required since table is being rendered in modal whose bgc is shade lighter in dark mode
+  const tableBorderColor = colorMode === 'dark' ? 'gray.600' : 'gray.100';
+
   const dateFormat = 'do MMM, yyyy';
 
   useEffect(() => {
@@ -44,6 +57,36 @@ export default function FlightBookerPage() {
   function closeSubmitModal() {
     send(flightBookerActions.RESET);
     onClose();
+  }
+
+  function getFormattedDate(date) {
+    if (!date) return '';
+
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  }
+
+  function renderTableBody() {
+    if (value !== 'final') return null;
+
+    return (
+      <Tbody>
+        <Tr>
+          <Td borderColor={tableBorderColor}>Traveling</Td>
+          <Td borderColor={tableBorderColor}>
+            {getFormattedDate(context.travelDate)}
+          </Td>
+        </Tr>
+        {context.tripType === TRIP_TYPES.return && (
+          <Tr>
+            <Td borderColor={tableBorderColor}>Return</Td>
+            <Td borderColor={tableBorderColor}>
+              {getFormattedDate(context.returnDate)}
+            </Td>
+          </Tr>
+        )}
+      </Tbody>
+    );
   }
 
   const TravelDateInput = forwardRef(({ value, onClick }, ref) => (
@@ -149,7 +192,19 @@ export default function FlightBookerPage() {
         <ModalContent>
           <ModalHeader>Flight Booker</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>Message body</ModalBody>
+          <ModalBody>
+            <Text mb="4">Your flight has been booked:</Text>
+            <Table variant="simple">
+              <TableCaption>Flight details</TableCaption>
+              <Thead>
+                <Tr>
+                  <Th borderColor={tableBorderColor}>flight</Th>
+                  <Th borderColor={tableBorderColor}>date</Th>
+                </Tr>
+              </Thead>
+              {renderTableBody()}
+            </Table>
+          </ModalBody>
 
           <ModalFooter>
             <Button colorScheme="teal" onClick={closeSubmitModal} size="md">
