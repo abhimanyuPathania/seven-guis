@@ -7,6 +7,7 @@ import LandingPage from './pages/LandingPage';
 import CounterPage from './pages/CounterPage';
 import TemperatureConverterPage from './pages/TemperatureConverterPage';
 import FlightBookerPage from './pages/FlightBookerPage';
+import TimerPage from './pages/TimerPage';
 import { ROUTES_MAP } from './commons/enums';
 import theme from './commons/theme';
 
@@ -31,6 +32,7 @@ function App() {
               path={ROUTES_MAP.flightBooker}
               component={FlightBookerPage}
             />
+            <Route path={ROUTES_MAP.timer} component={TimerPage} />
             <Route component={LandingPage} />
           </Switch>
         </Box>

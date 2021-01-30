@@ -17,6 +17,12 @@ export const ROUTES = [
     path: '/flight-booker',
     label: 'Flight Booker',
   },
+  {
+    no: 4,
+    name: 'timer',
+    path: '/timer',
+    label: 'Timer',
+  },
 ];
 
 export const ROUTES_MAP = Object.fromEntries(
