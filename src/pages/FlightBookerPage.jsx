@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { useMachine } from '@xstate/react';
 import {
   Box,
@@ -9,6 +9,15 @@ import {
   FormLabel,
   Heading,
   Select,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Flex,
 } from '@chakra-ui/react';
 import ReactDatePicker from 'react-datepicker';
 
@@ -16,18 +25,26 @@ import flightBookerMachine, {
   flightBookerActions,
   canSubmit,
   canSetReturnDate,
-  TRIP_TYPES,
   TRIP_TYPES_LIST,
 } from '../machines/flightBooker';
 import '../components/DatePicker/datePicker.css';
 
 export default function FlightBookerPage() {
   const [current, send] = useMachine(flightBookerMachine);
-  const { context } = current;
+  const { context, value } = current;
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const dateFormat = 'do MMM, yyyy';
 
-  console.log('state', current.value);
-  console.log('context', context);
+  useEffect(() => {
+    if (value === 'final') onOpen();
+
+    if (value === 'editing' && isOpen) onClose();
+  }, [value]);
+
+  function closeSubmitModal() {
+    send(flightBookerActions.RESET);
+    onClose();
+  }
 
   const TravelDateInput = forwardRef(({ value, onClick }, ref) => (
     <FormControl>
@@ -55,14 +72,13 @@ export default function FlightBookerPage() {
   });
 
   return (
-    <Box>
+    <Box maxW="md" mx="auto">
       <Heading mb="6">3. Flight Booker</Heading>
-
       <Box
         borderColor="gray.200"
         borderWidth="1px"
         borderRadius="md"
-        w="300px"
+        w="100%"
         p="4">
         <Stack spacing="4">
           <FormControl id="tripType">
@@ -92,6 +108,7 @@ export default function FlightBookerPage() {
               }
               customInput={<TravelDateInput />}
               dateFormat={dateFormat}
+              minDate={new Date()}
             />
           </Box>
           <Box>
@@ -126,6 +143,21 @@ export default function FlightBookerPage() {
           </Stack>
         </Stack>
       </Box>
+
+      <Modal isOpen={isOpen} onClose={closeSubmitModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Flight Booker</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>Message body</ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="teal" onClick={closeSubmitModal} size="md">
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }

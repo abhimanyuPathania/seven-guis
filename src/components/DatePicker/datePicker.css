@@ -27,3 +27,49 @@
 .react-datepicker__year-text--in-range {
   background-color: #319795;
 }
+
+/* DARK MODE */
+
+body.chakra-ui-dark .react-datepicker {
+  background-color: #4a5568;
+  color: #edf2f7;
+}
+body.chakra-ui-dark .react-datepicker__header {
+  background-color: #718096;
+}
+body.chakra-ui-dark .react-datepicker__current-month,
+body.chakra-ui-dark .react-datepicker-time__header,
+body.chakra-ui-dark .react-datepicker-year-header {
+  color: #fff;
+}
+body.chakra-ui-dark .react-datepicker__day-name,
+body.chakra-ui-dark .react-datepicker__day,
+body.chakra-ui-dark .react-datepicker__time-name {
+  color: #fff;
+}
+body.chakra-ui-dark .react-datepicker__day-name:hover,
+body.chakra-ui-dark .react-datepicker__day:hover,
+body.chakra-ui-dark .react-datepicker__time-name:hover {
+  background-color: #1a202c;
+}
+body.chakra-ui-dark .react-datepicker__day--disabled,
+body.chakra-ui-dark .react-datepicker__month-text--disabled,
+body.chakra-ui-dark .react-datepicker__quarter-text--disabled,
+body.chakra-ui-dark .react-datepicker__year-text--disabled {
+  color: #a0aec0;
+}
+body.chakra-ui-dark .react-datepicker__day--disabled:hover,
+body.chakra-ui-dark .react-datepicker__month-text--disabled:hover,
+body.chakra-ui-dark .react-datepicker__quarter-text--disabled:hover,
+body.chakra-ui-dark .react-datepicker__year-text--disabled:hover {
+  background-color: #4a5568;
+  cursor: not-allowed;
+}
+body.chakra-ui-dark
+  .react-datepicker-popper[data-placement^='bottom']
+  .react-datepicker__triangle,
+body.chakra-ui-dark
+  .react-datepicker-popper[data-placement^='bottom']
+  .react-datepicker__triangle::before {
+  border-bottom-color: #718096;
+}
