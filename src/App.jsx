@@ -1,5 +1,6 @@
 import { ChakraProvider, Box } from '@chakra-ui/react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import Navbar from './components/Navbar/Navbar';
 import LandingPage from './pages/LandingPage';

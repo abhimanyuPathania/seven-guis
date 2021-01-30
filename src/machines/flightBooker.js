@@ -30,13 +30,13 @@ export function canSubmit(context) {
     return (
       context.travelDate &&
       context.returnDate &&
-      context.returnDate > context.travelDate
+      context.returnDate >= context.travelDate
     );
   }
 }
 
 export function canSetReturnDate(context) {
-  return context.tripType === TRIP_TYPES.return;
+  return context.tripType === TRIP_TYPES.return && context.travelDate;
 }
 
 const flightBookerMachine = Machine(
