@@ -23,6 +23,12 @@ export const ROUTES = [
     path: '/timer',
     label: 'Timer',
   },
+  {
+    no: 5,
+    name: 'crud',
+    path: '/crud',
+    label: 'CRUD',
+  },
 ];
 
 export const ROUTES_MAP = Object.fromEntries(
