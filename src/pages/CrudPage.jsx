@@ -9,6 +9,7 @@ import {
   FormControl,
   FormLabel,
   Flex,
+  useStyleConfig,
 } from '@chakra-ui/react';
 
 import CurdRecord from '../components/CrudRecord/CrudRecord';
@@ -22,12 +23,13 @@ import crudMachine, {
 
 export default function CrudPage() {
   const [current, send] = useMachine(crudMachine);
+  const tealButtonStyles = useStyleConfig('Button', { colorScheme: 'teal' });
+
   const {
     value: currentState,
     context,
     context: { firstName, lastName, searchInput, records, selectedRecordId },
   } = current;
-
   const recordsToRender =
     currentState === 'searching'
       ? getSearchedRecords(records, searchInput)
@@ -109,8 +111,16 @@ export default function CrudPage() {
                 py="1"
                 px="3"
                 backgroundColor={
-                  selectedRecordId === record.id ? 'teal.500' : 'auto'
+                  selectedRecordId === record.id
+                    ? tealButtonStyles.bg
+                    : undefined
                 }
+                color={
+                  selectedRecordId === record.id
+                    ? tealButtonStyles.color
+                    : undefined
+                }
+                cursor="pointer"
               />
             ))}
           </Stack>
