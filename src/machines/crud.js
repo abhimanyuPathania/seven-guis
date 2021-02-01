@@ -15,16 +15,41 @@ export const crudActions = {
   UPDATE: 'UPDATE',
   DELETE: 'DELETE',
   SEARCH: 'SEARCH',
+  SELECT_RECORD: 'SELECT_RECORD',
+  CLEAR_SELECT_RECORD: 'CLEAR_SELECT_RECORD',
   SET_FIRSTNAME: 'SET_FIRSTNAME',
   SET_LASTNAME: 'SET_LASTNAME',
 };
+
+function getRecordById(context, recordId) {
+  return context.records.find((record) => record.id === recordId);
+}
 
 export function canCreate(context) {
   return context.firstName && context.lastName;
 }
 
-export function canUpdateOrDelete(context) {
+export function canDelete(context) {
   return Boolean(context.selectedRecordId);
+}
+
+export function canUpdate(context) {
+  const { selectedRecordId, firstName, lastName } = context;
+  const record = getRecordById(context, selectedRecordId);
+
+  return (
+    selectedRecordId &&
+    (firstName !== record.firstName || lastName !== record.lastName)
+  );
+}
+
+export function getSearchedRecords(records, searchInput) {
+  return records.filter((record) => {
+    return (
+      record.firstName.toLowerCase().includes(searchInput) ||
+      record.lastName.toLowerCase().includes(searchInput)
+    );
+  });
 }
 
 const crudMachine = Machine(
@@ -33,7 +58,6 @@ const crudMachine = Machine(
     initial: 'initialize',
     context: {
       records: [],
-      searchedRecords: [],
       selectedRecordId: undefined,
       searchInput: '',
       firstName: '',
@@ -42,30 +66,13 @@ const crudMachine = Machine(
     states: {
       initialize: {
         entry: 'getRecordsFromStorage',
-        on: {
-          '': 'active',
-        },
+        always: 'active',
       },
       active: {
         on: {
           '': {
             target: 'searching',
             cond: (context) => context.searchInput,
-          },
-          [crudActions.CREATE]: {
-            cond: 'canCreate',
-            actions: [
-              assign({
-                records: (context) => {
-                  const { firstName, lastName } = context;
-                  const newRecord = getNameObj({ firstName, lastName });
-                  return [...context.records, newRecord];
-                },
-                firstName: '',
-                lastName: '',
-              }),
-              'saveRecordsToStorage',
-            ],
           },
         },
       },
@@ -79,6 +86,22 @@ const crudMachine = Machine(
       },
     },
     on: {
+      [crudActions.CREATE]: {
+        cond: 'canCreate',
+        actions: [
+          assign({
+            records: (context) => {
+              const { firstName, lastName } = context;
+              const newRecord = getNameObj({ firstName, lastName });
+
+              return [...context.records, newRecord];
+            },
+            firstName: '',
+            lastName: '',
+          }),
+          'saveRecordsToStorage',
+        ],
+      },
       [crudActions.SEARCH]: {
         actions: ['handleSearch'],
       },
@@ -92,20 +115,59 @@ const crudMachine = Machine(
           lastName: (_, event) => event.value,
         }),
       },
+      [crudActions.SELECT_RECORD]: {
+        actions: assign({
+          selectedRecordId: (_, event) => event.value,
+          firstName: (context, event) =>
+            getRecordById(context, event.value).firstName,
+          lastName: (context, event) =>
+            getRecordById(context, event.value).lastName,
+        }),
+      },
+      [crudActions.CLEAR_SELECT_RECORD]: {
+        actions: assign({
+          selectedRecordId: undefined,
+          firstName: '',
+          lastName: '',
+        }),
+      },
+      [crudActions.UPDATE]: {
+        cond: 'canUpdate',
+        actions: [
+          assign({
+            records: (context) => {
+              const { firstName, lastName, selectedRecordId } = context;
+              const record = getRecordById(context, selectedRecordId);
+
+              record.firstName = firstName;
+              record.lastName = lastName;
+              return [...context.records];
+            },
+          }),
+          'saveRecordsToStorage',
+        ],
+      },
+      [crudActions.DELETE]: {
+        cond: 'canDelete',
+        actions: [
+          assign({
+            records: (context) =>
+              context.records.filter(
+                (record) => record.id !== context.selectedRecordId,
+              ),
+            firstName: '',
+            lastName: '',
+            selectedRecordId: undefined,
+          }),
+          'saveRecordsToStorage',
+        ],
+      },
     },
   },
   {
     actions: {
       handleSearch: assign({
         searchInput: (_, event) => event.value,
-        searchedRecords: (context, event) =>
-          context.records.filter((record) => {
-            const searchInput = event.value;
-            return (
-              record.firstName.includes(searchInput) ||
-              record.lastName.includes(searchInput)
-            );
-          }),
       }),
       getRecordsFromStorage: assign({
         records: () => {
@@ -126,7 +188,8 @@ const crudMachine = Machine(
     },
     guards: {
       canCreate,
-      canUpdateOrDelete,
+      canDelete,
+      canUpdate,
     },
   },
 );
