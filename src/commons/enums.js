@@ -29,6 +29,12 @@ export const ROUTES = [
     path: '/crud',
     label: 'CRUD',
   },
+  {
+    no: 6,
+    name: 'circles',
+    path: '/circle-drawer',
+    label: 'Circle Drawer',
+  },
 ];
 
 export const ROUTES_MAP = Object.fromEntries(

@@ -47,7 +47,6 @@ export default function CrudPage() {
     <Box maxW="xl" mx="auto">
       <Heading mb="6">5. Crud</Heading>
       <Stack spacing="4" borderWidth="1px" padding="4" borderRadius="md">
-        {/* <Text>Current State: {currentState}</Text> */}
         <FormControl id="search">
           <FormLabel>Search</FormLabel>
           <Input
