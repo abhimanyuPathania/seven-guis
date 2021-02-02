@@ -5,7 +5,6 @@ import {
   Stack,
   Input,
   Heading,
-  Text,
   FormControl,
   FormLabel,
   Flex,
@@ -19,10 +18,11 @@ import crudMachine, {
   canDelete,
   canUpdate,
   getSearchedRecords,
+  getNameObj,
 } from '../machines/crud';
 
 export default function CrudPage() {
-  const [current, send] = useMachine(crudMachine);
+  const [current, send] = useMachine(crudMachine, { devTools: true });
   const tealButtonStyles = useStyleConfig('Button', { colorScheme: 'teal' });
 
   const {
@@ -42,9 +42,6 @@ export default function CrudPage() {
     }
     send({ type: crudActions.SELECT_RECORD, value: recordId });
   }
-
-  // console.log('currentState', currentState);
-  // console.log('context', current.context);
 
   return (
     <Box maxW="xl" mx="auto">
@@ -130,14 +127,24 @@ export default function CrudPage() {
           <Button
             colorScheme="teal"
             flex="1"
-            onClick={() => send(crudActions.CREATE)}
+            onClick={() =>
+              send({
+                type: crudActions.CREATE,
+                value: getNameObj({ firstName, lastName }),
+              })
+            }
             disabled={!canCreate(context)}>
             Create
           </Button>
           <Button
             colorScheme="teal"
             flex="1"
-            onClick={() => send(crudActions.UPDATE)}
+            onClick={() =>
+              send({
+                type: crudActions.UPDATE,
+                value: { firstName, lastName, selectedRecordId },
+              })
+            }
             disabled={!canUpdate(context)}>
             Update
           </Button>
@@ -145,7 +152,9 @@ export default function CrudPage() {
             colorScheme="teal"
             flex="1"
             variant="outline"
-            onClick={() => send(crudActions.DELETE)}
+            onClick={() =>
+              send({ type: crudActions.DELETE, value: selectedRecordId })
+            }
             disabled={!canDelete(context)}>
             Delete
           </Button>

@@ -1,15 +1,6 @@
 import { Machine, assign } from 'xstate';
 
 const storageKey = 'crudXstate';
-
-const getNameObj = ({ firstName, lastName }) => {
-  return {
-    firstName,
-    lastName,
-    id: new Date().getTime(),
-  };
-};
-
 export const crudActions = {
   CREATE: 'CREATE',
   UPDATE: 'UPDATE',
@@ -20,6 +11,14 @@ export const crudActions = {
   SET_FIRSTNAME: 'SET_FIRSTNAME',
   SET_LASTNAME: 'SET_LASTNAME',
 };
+
+export function getNameObj({ firstName, lastName }) {
+  return {
+    firstName,
+    lastName,
+    id: new Date().getTime(),
+  };
+}
 
 function getRecordById(context, recordId) {
   return context.records.find((record) => record.id === recordId);
@@ -39,6 +38,8 @@ export function canUpdate(context) {
 
   return (
     selectedRecordId &&
+    firstName &&
+    lastName &&
     (firstName !== record.firstName || lastName !== record.lastName)
   );
 }
@@ -69,19 +70,15 @@ const crudMachine = Machine(
         always: 'active',
       },
       active: {
-        on: {
-          '': {
-            target: 'searching',
-            cond: (context) => context.searchInput,
-          },
+        always: {
+          target: 'searching',
+          cond: (context) => context.searchInput,
         },
       },
       searching: {
-        on: {
-          '': {
-            target: 'active',
-            cond: (context) => !context.searchInput,
-          },
+        always: {
+          target: 'active',
+          cond: (context) => !context.searchInput,
         },
       },
     },
@@ -90,12 +87,7 @@ const crudMachine = Machine(
         cond: 'canCreate',
         actions: [
           assign({
-            records: (context) => {
-              const { firstName, lastName } = context;
-              const newRecord = getNameObj({ firstName, lastName });
-
-              return [...context.records, newRecord];
-            },
+            records: (context, event) => [...context.records, event.value],
             firstName: '',
             lastName: '',
           }),
@@ -135,12 +127,13 @@ const crudMachine = Machine(
         cond: 'canUpdate',
         actions: [
           assign({
-            records: (context) => {
-              const { firstName, lastName, selectedRecordId } = context;
+            records: (context, event) => {
+              const updatedRecordData = event.value;
+              const { selectedRecordId } = updatedRecordData;
               const record = getRecordById(context, selectedRecordId);
 
-              record.firstName = firstName;
-              record.lastName = lastName;
+              record.firstName = updatedRecordData.firstName;
+              record.lastName = updatedRecordData.lastName;
               return [...context.records];
             },
           }),
@@ -151,10 +144,8 @@ const crudMachine = Machine(
         cond: 'canDelete',
         actions: [
           assign({
-            records: (context) =>
-              context.records.filter(
-                (record) => record.id !== context.selectedRecordId,
-              ),
+            records: (context, event) =>
+              context.records.filter((record) => record.id !== event.value),
             firstName: '',
             lastName: '',
             selectedRecordId: undefined,
