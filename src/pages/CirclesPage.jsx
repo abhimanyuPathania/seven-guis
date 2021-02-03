@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { useMachine } from '@xstate/react';
+import { AnimatePresence } from 'framer-motion';
 import {
   Box,
   Button,
@@ -9,9 +10,9 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
-  Circle,
 } from '@chakra-ui/react';
 
+import Circle from '../components/Circle/Circle';
 import circlesMachine, { circlesActions } from '../machines/circles';
 
 export default function CirclesPage() {
@@ -57,30 +58,38 @@ export default function CirclesPage() {
           position="relative"
           onClick={onCanvasClick}
           ref={canvasDivRef}>
-          {circles.map((circle) => {
-            const radius = circle.diameter / 2;
-            const top = circle.y - radius;
-            const left = circle.x - radius;
-
-            return (
-              <Circle
-                key={circle.id}
-                backgroundColor="yellow.100"
-                opacity={0.9}
-                position="absolute"
-                size={`${circle.diameter}px`}
-                top={`${top}px`}
-                left={`${left}px`}
-              />
-            );
-          })}
+          <AnimatePresence>
+            {circles.map((circle) => {
+              const radius = circle.diameter / 2;
+              const top = circle.y - radius;
+              const left = circle.x - radius;
+              return (
+                <Circle
+                  key={circle.id}
+                  size={circle.diameter}
+                  style={{
+                    position: 'absolute',
+                    top: `${top}px`,
+                    left: `${left}px`,
+                  }}
+                />
+              );
+            })}
+          </AnimatePresence>
         </Box>
         <Stack direction="row" spacing="6" justify="center">
-          <Button colorScheme="teal" size="sm">
+          <Button colorScheme="teal" flex="1">
             Redo
           </Button>
-          <Button colorScheme="teal" size="sm" variant="outline">
+          <Button colorScheme="teal" flex="1">
             Undo
+          </Button>
+          <Button
+            colorScheme="teal"
+            flex="1"
+            variant="outline"
+            onClick={() => send(circlesActions.RESET)}>
+            Reset
           </Button>
         </Stack>
       </Stack>

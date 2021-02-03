@@ -2,7 +2,7 @@ import { Machine, assign, spawn } from 'xstate';
 
 import { createCircleMachine } from './circle';
 
-const DEFAULT_DIAMETER = 40; // px
+const DEFAULT_DIAMETER = 50; // px
 export const circlesActions = {
   DRAW: 'DRAW',
   RESET: 'RESET',
@@ -39,7 +39,7 @@ const circlesMachine = Machine({
           }),
         },
         [circlesActions.RESET]: {
-          actions: assign({ count: () => 0 }),
+          actions: assign({ circles: [] }),
         },
       },
     },
