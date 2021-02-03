@@ -13,11 +13,16 @@ import {
 } from '@chakra-ui/react';
 
 import Circle from '../components/Circle/Circle';
-import circlesMachine, { circlesActions } from '../machines/circles';
+import circlesMachine, {
+  circlesActions,
+  canUndo,
+  canRedo,
+} from '../machines/circles';
 
 export default function CirclesPage() {
   const [current, send] = useMachine(circlesMachine);
   const {
+    context,
     context: { circles },
   } = current;
   const canvasDivRef = useRef(null);
@@ -78,11 +83,19 @@ export default function CirclesPage() {
           </AnimatePresence>
         </Box>
         <Stack direction="row" spacing="6" justify="center">
-          <Button colorScheme="teal" flex="1">
-            Redo
-          </Button>
-          <Button colorScheme="teal" flex="1">
+          <Button
+            colorScheme="teal"
+            flex="1"
+            onClick={() => send(circlesActions.UNDO)}
+            disabled={!canUndo(context)}>
             Undo
+          </Button>
+          <Button
+            colorScheme="teal"
+            flex="1"
+            onClick={() => send(circlesActions.REDO)}
+            disabled={!canRedo(context)}>
+            Redo
           </Button>
           <Button
             colorScheme="teal"
