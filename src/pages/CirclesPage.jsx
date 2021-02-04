@@ -1,22 +1,14 @@
 import { useRef, useEffect } from 'react';
 import { useMachine } from '@xstate/react';
 import { AnimatePresence } from 'framer-motion';
-import {
-  Box,
-  Button,
-  Stack,
-  Heading,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-} from '@chakra-ui/react';
+import { Box, Button, Stack, Heading } from '@chakra-ui/react';
 
 import Circle from '../components/Circle/Circle';
 import circlesMachine, {
   circlesActions,
   canUndo,
   canRedo,
+  DEFAULT_DIAMETER,
 } from '../machines/circles';
 
 export default function CirclesPage() {
@@ -37,8 +29,10 @@ export default function CirclesPage() {
 
   function onCanvasClick(event) {
     const { current: canvasBoundingRect } = canvasBoundingRef;
+    const { current: canvasDiv } = canvasDivRef;
 
-    if (!canvasBoundingRect) return;
+    if (!(canvasBoundingRect && canvasDiv && event.target === canvasDiv))
+      return;
 
     // relative to canvas div
     const { clientX = 0, clientY = 0 } = event;
@@ -65,18 +59,11 @@ export default function CirclesPage() {
           ref={canvasDivRef}>
           <AnimatePresence>
             {circles.map((circle) => {
-              const radius = circle.diameter / 2;
-              const top = circle.y - radius;
-              const left = circle.x - radius;
               return (
                 <Circle
                   key={circle.id}
-                  size={circle.diameter}
-                  style={{
-                    position: 'absolute',
-                    top: `${top}px`,
-                    left: `${left}px`,
-                  }}
+                  circleRef={circle.ref}
+                  defaultDiameter={DEFAULT_DIAMETER}
                 />
               );
             })}

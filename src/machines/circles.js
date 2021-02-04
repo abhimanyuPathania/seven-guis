@@ -2,7 +2,7 @@ import { Machine, assign, spawn } from 'xstate';
 
 import { createCircleMachine } from './circle';
 
-const DEFAULT_DIAMETER = 50; // px
+export const DEFAULT_DIAMETER = 50; // px
 export const circlesActions = {
   DRAW: 'DRAW',
   UNDO: 'UNDO',
@@ -44,7 +44,7 @@ const circlesMachine = Machine(
                 const { x, y } = event;
                 const newCircle = createCircle({ x, y });
                 return context.circles.concat({
-                  ...newCircle,
+                  id: newCircle.id,
                   ref: spawn(createCircleMachine(newCircle)),
                 });
               },
@@ -82,7 +82,7 @@ const circlesMachine = Machine(
             ],
           },
           [circlesActions.RESET]: {
-            actions: assign({ circles: [] }),
+            actions: assign({ circles: [], redoCircles: [] }),
           },
         },
       },

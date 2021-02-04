@@ -1,0 +1,6 @@
+.circle {
+  opacity: 0.9;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: #76e4f7;
+}
