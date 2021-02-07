@@ -1,6 +1,7 @@
-import { Machine, assign, spawn } from 'xstate';
+import { Machine, assign, spawn, send, actions } from 'xstate';
 
 import { createCircleMachine } from './circle';
+import { circleActions } from './circle';
 
 export const DEFAULT_DIAMETER = 50; // px
 export const circlesActions = {
@@ -20,11 +21,11 @@ function createCircle({ x, y }) {
 }
 
 export function canUndo(context) {
-  return context.circles.length > 0;
+  return context.commands.length > 0;
 }
 
 export function canRedo(context) {
-  return context.redoCircles.length > 0;
+  return context.commandsToRedo.length > 0;
 }
 
 const circlesMachine = Machine(
@@ -33,65 +34,104 @@ const circlesMachine = Machine(
     initial: 'active',
     context: {
       circles: [],
-      redoCircles: [],
+      commands: [],
+      commandsToRedo: [],
     },
     states: {
       active: {
         on: {
           [circlesActions.DRAW]: {
-            actions: assign({
-              circles: (context, event) => {
-                const { x, y } = event;
-                const newCircle = createCircle({ x, y });
-                return context.circles.concat({
+            actions: assign((context, event) => {
+              const { commands, circles } = context;
+              const { x, y } = event;
+              const newCircle = createCircle({ x, y });
+
+              return {
+                circles: circles.concat({
                   id: newCircle.id,
                   ref: spawn(createCircleMachine(newCircle)),
-                });
-              },
-              redoCircles: [],
+                }),
+                commands: commands.concat({
+                  type: circlesActions.DRAW,
+                  x,
+                  y,
+                }),
+              };
+            }),
+          },
+          [circleActions.UPDATE_DIAMETER]: {
+            actions: assign((context, event) => {
+              return {
+                commands: context.commands.concat({
+                  type: circleActions.UPDATE_DIAMETER,
+                  circleId: event.id,
+                }),
+              };
             }),
           },
           [circlesActions.UNDO]: {
             cond: 'canUndo',
-            actions: [
-              assign({
-                redoCircles: (context) =>
-                  context.redoCircles.concat(
-                    context.circles[context.circles.length - 1],
-                  ),
-              }),
-              assign({
-                circles: (context) =>
-                  context.circles.slice(0, context.circles.length - 1),
-              }),
-            ],
+            actions: actions.choose([
+              { cond: 'shouldUndoDraw', actions: 'undoDrawCircle' },
+              {
+                cond: 'shouldUndoUpdateDiameter',
+                actions: 'undoUpdateDiameter',
+              },
+            ]),
           },
           [circlesActions.REDO]: {
             cond: 'canRedo',
-            actions: [
-              assign({
-                circles: (context) =>
-                  context.circles.concat(
-                    context.redoCircles[context.redoCircles.length - 1],
-                  ),
-              }),
-              assign({
-                redoCircles: (context) =>
-                  context.redoCircles.slice(0, context.redoCircles.length - 1),
-              }),
-            ],
+            actions: actions.choose([
+              { cond: 'shouldRedoDraw', actions: 'undoDrawCircle' },
+              // {
+              //   cond: 'shouldUndoUpdateDiameter',
+              //   actions: 'undoUpdateDiameter',
+              // },
+            ]),
           },
           [circlesActions.RESET]: {
-            actions: assign({ circles: [], redoCircles: [] }),
+            actions: assign({ circles: [], commands: [], commandsToRedo: [] }),
           },
         },
       },
     },
   },
   {
+    actions: {
+      undoDrawCircle: assign((context) => {
+        const { circles, commands, commandsToRedo } = context;
+        const commandToUndo = commands[commands.length - 1];
+        return {
+          circles: circles.slice(0, circles.length - 1),
+          commands: commands.slice(0, circles.length - 1),
+          commandsToRedo: commandsToRedo.concat(commandToUndo),
+        };
+      }),
+      redoCircles: assign((context) => {
+        const { circles, redoCircles } = context;
+        const circleToRedo = redoCircles[redoCircles.length - 1];
+        return {
+          circles: circles.concat(circleToRedo),
+          // redoCircles: redoCircles.slice(0, redoCircles.length - 1),
+        };
+      }),
+      // addCommandToRedo:
+    },
     guards: {
       canUndo,
       canRedo,
+      shouldUndoDraw: (context) =>
+        context.commands[context.commands.length - 1].type ===
+        circlesActions.DRAW,
+      shouldUndoUpdateDiameter: (context) =>
+        context.commands[context.commands.length - 1].type ===
+        circleActions.UPDATE_DIAMETER,
+      shouldRedoDraw: (context) =>
+        context.commandsToRedo[context.commandsToRedo.length - 1].type ===
+        circlesActions.DRAW,
+      shouldRedoUpdateDiameter: (context) =>
+        context.commandsToRedo[context.commandsToRedo.length - 1].type ===
+        circleActions.UPDATE_DIAMETER,
     },
   },
 );

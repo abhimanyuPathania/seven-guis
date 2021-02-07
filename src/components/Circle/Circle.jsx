@@ -32,7 +32,7 @@ function Circle(props) {
   const left = x - radius;
 
   function onClosePopover() {
-    send(circleActions.VIEW);
+    send(circleActions.UPDATE_DIAMETER_END);
   }
 
   function onCircleClick(e) {
@@ -80,12 +80,6 @@ function Circle(props) {
                   type: circleActions.UPDATE_DIAMETER,
                   value: sliderValue,
                 });
-              }}
-              onChangeStart={(sliderValue) => {
-                console.log('onChangeStart');
-              }}
-              onChangeEnd={(sliderValue) => {
-                console.log('onChangeEnd');
               }}>
               <SliderTrack>
                 <SliderFilledTrack />
