@@ -72,17 +72,21 @@ const circlesMachine = Machine(
           [circlesActions.UNDO]: {
             cond: 'canUndo',
             actions: actions.choose([
-              { cond: 'shouldUndoDraw', actions: 'undoDrawCircle' },
+              {
+                cond: 'shouldUndoDraw',
+                actions: ['undoDrawCircle', 'consumeUndoCommand'],
+              },
               {
                 cond: 'shouldUndoUpdateDiameter',
-                actions: 'undoUpdateDiameter',
+                // actions: ['undoUpdateDiameter', 'consumeUndoCommand'],
+                actions: ['undoUpdateDiameter'],
               },
             ]),
           },
           [circlesActions.REDO]: {
             cond: 'canRedo',
             actions: actions.choose([
-              { cond: 'shouldRedoDraw', actions: 'undoDrawCircle' },
+              { cond: 'shouldRedoDraw', actions: 'redoDrawCircle' },
               // {
               //   cond: 'shouldUndoUpdateDiameter',
               //   actions: 'undoUpdateDiameter',
@@ -98,24 +102,49 @@ const circlesMachine = Machine(
   },
   {
     actions: {
-      undoDrawCircle: assign((context) => {
-        const { circles, commands, commandsToRedo } = context;
+      consumeUndoCommand: assign((context) => {
+        const { commands, commandsToRedo } = context;
         const commandToUndo = commands[commands.length - 1];
         return {
-          circles: circles.slice(0, circles.length - 1),
-          commands: commands.slice(0, circles.length - 1),
+          commands: commands.slice(0, commands.length - 1),
           commandsToRedo: commandsToRedo.concat(commandToUndo),
         };
       }),
-      redoCircles: assign((context) => {
-        const { circles, redoCircles } = context;
-        const circleToRedo = redoCircles[redoCircles.length - 1];
+      undoDrawCircle: assign((context) => {
+        const { circles } = context;
         return {
-          circles: circles.concat(circleToRedo),
-          // redoCircles: redoCircles.slice(0, redoCircles.length - 1),
+          circles: circles.slice(0, circles.length - 1),
         };
       }),
-      // addCommandToRedo:
+      redoDrawCircle: assign((context) => {
+        const { commands, circles, commandsToRedo } = context;
+        const commandToRedo = commandsToRedo[commandsToRedo.length - 1];
+        const { x, y } = commandToRedo;
+        const newCircle = createCircle({ x, y });
+
+        return {
+          circles: circles.concat({
+            id: newCircle.id,
+            ref: spawn(createCircleMachine(newCircle)),
+          }),
+          commands: commands.concat({
+            type: circlesActions.DRAW,
+            x,
+            y,
+          }),
+          commandsToRedo: commandsToRedo.slice(0, circles.length - 1),
+        };
+      }),
+      undoUpdateDiameter: send(circleActions.UNDO_UPDATE_DIAMETER, {
+        to: (context) => {
+          const { commands, circles } = context;
+          const commandToUndo = commands[commands.length - 1];
+          const circle = circles.find(
+            (circle) => circle.id === commandToUndo.circleId,
+          );
+          return circle.ref;
+        },
+      }),
     },
     guards: {
       canUndo,

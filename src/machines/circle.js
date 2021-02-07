@@ -4,14 +4,13 @@ export const circleActions = {
   RESIZE: 'RESIZE',
   UPDATE_DIAMETER: 'UPDATE_DIAMETER',
   UPDATE_DIAMETER_END: 'UPDATE_DIAMETER_END',
-  // UNDO: 'UNDO',
-  // REDO: 'REDO',
+  UNDO_UPDATE_DIAMETER: 'UNDO_UPDATE_DIAMETER',
 };
 
 export const createCircleMachine = ({ x, y, diameter, id }) =>
   Machine(
     {
-      id: 'circle',
+      id,
       initial: 'viewing',
       context: {
         x,
@@ -24,6 +23,16 @@ export const createCircleMachine = ({ x, y, diameter, id }) =>
         viewing: {
           on: {
             [circleActions.RESIZE]: 'resizing',
+            [circleActions.UNDO_UPDATE_DIAMETER]: {
+              actions: assign((context) => {
+                const { diameterHistory } = context;
+                diameterHistory.pop();
+                return {
+                  diameter: diameterHistory[diameterHistory.length - 1],
+                  diameterHistory: [...diameterHistory],
+                };
+              }),
+            },
           },
         },
         resizing: {
