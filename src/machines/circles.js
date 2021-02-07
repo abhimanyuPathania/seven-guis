@@ -45,16 +45,17 @@ const circlesMachine = Machine(
               const { commands, circles } = context;
               const { x, y } = event;
               const newCircle = createCircle({ x, y });
+              const ref = spawn(createCircleMachine(newCircle));
 
               return {
                 circles: circles.concat({
                   id: newCircle.id,
-                  ref: spawn(createCircleMachine(newCircle)),
+                  ref,
                 }),
                 commands: commands.concat({
                   type: circlesActions.DRAW,
-                  x,
-                  y,
+                  id: newCircle.id,
+                  ref,
                 }),
               };
             }),
@@ -78,7 +79,6 @@ const circlesMachine = Machine(
               },
               {
                 cond: 'shouldUndoUpdateDiameter',
-                // actions: ['undoUpdateDiameter', 'consumeUndoCommand'],
                 actions: ['undoUpdateDiameter'],
               },
             ]),
@@ -119,31 +119,31 @@ const circlesMachine = Machine(
       redoDrawCircle: assign((context) => {
         const { commands, circles, commandsToRedo } = context;
         const commandToRedo = commandsToRedo[commandsToRedo.length - 1];
-        const { x, y } = commandToRedo;
-        const newCircle = createCircle({ x, y });
+        const { id, ref } = commandToRedo;
 
         return {
           circles: circles.concat({
-            id: newCircle.id,
-            ref: spawn(createCircleMachine(newCircle)),
+            id,
+            ref,
           }),
           commands: commands.concat({
             type: circlesActions.DRAW,
-            x,
-            y,
+            id,
+            ref,
           }),
           commandsToRedo: commandsToRedo.slice(0, circles.length - 1),
         };
       }),
-      undoUpdateDiameter: send(circleActions.UNDO_UPDATE_DIAMETER, {
-        to: (context) => {
-          const { commands, circles } = context;
-          const commandToUndo = commands[commands.length - 1];
-          const circle = circles.find(
-            (circle) => circle.id === commandToUndo.circleId,
-          );
-          return circle.ref;
-        },
+      undoUpdateDiameter: actions.pure((context) => {
+        const { commands, circles } = context;
+        const commandToUndo = commands[commands.length - 1];
+        const circle = circles.find(
+          (circle) => circle.id === commandToUndo.circleId,
+        );
+        return [
+          send(circleActions.UNDO_UPDATE_DIAMETER, { to: circle.ref }),
+          'consumeUndoCommand',
+        ];
       }),
     },
     guards: {
