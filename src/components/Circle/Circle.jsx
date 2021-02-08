@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+import { motion, useMotionValue, animate, useTransform } from 'framer-motion';
 import PropTypes from 'prop-types';
 import { useActor } from '@xstate/react';
 import {
@@ -26,10 +27,17 @@ function Circle(props) {
     context: { x, y, diameter },
     value: currentState,
   } = state;
-  const sizePx = `${diameter}px`;
-  const radius = diameter / 2;
-  const top = y - radius;
-  const left = x - radius;
+  const size = useMotionValue(diameter);
+  const top = useTransform(size, (value) => y - value / 2);
+  const left = useTransform(size, (value) => x - value / 2);
+
+  useEffect(() => {
+    const controls = animate(size, diameter, {
+      type: 'tween',
+    });
+
+    return controls.stop;
+  }, [diameter, size]);
 
   function onClosePopover() {
     send(circleActions.UPDATE_DIAMETER_END);
@@ -52,11 +60,11 @@ function Circle(props) {
           transition={{ duration: 0.5 }}
           className={css.circle}
           style={{
-            width: sizePx,
-            height: sizePx,
             position: 'absolute',
-            top: `${top}px`,
-            left: `${left}px`,
+            width: size,
+            height: size,
+            top,
+            left,
             ...style,
           }}
           {...otherProps}

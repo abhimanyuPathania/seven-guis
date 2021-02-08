@@ -25,8 +25,6 @@ export default function CirclesPage() {
     canvasBoundingRef.current = canvasDivRef.current.getBoundingClientRect();
   }, []);
 
-  console.log('context', current.context);
-
   function onCanvasClick(event) {
     const { current: canvasBoundingRect } = canvasBoundingRef;
     const { current: canvasDiv } = canvasDivRef;
