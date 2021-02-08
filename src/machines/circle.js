@@ -5,6 +5,7 @@ export const circleActions = {
   UPDATE_DIAMETER: 'UPDATE_DIAMETER',
   UPDATE_DIAMETER_END: 'UPDATE_DIAMETER_END',
   UNDO_UPDATE_DIAMETER: 'UNDO_UPDATE_DIAMETER',
+  REDO_UPDATE_DIAMETER: 'REDO_UPDATE_DIAMETER',
 };
 
 export const createCircleMachine = ({ x, y, diameter, id }) =>
@@ -17,6 +18,7 @@ export const createCircleMachine = ({ x, y, diameter, id }) =>
         y,
         id,
         diameter,
+        diameterPosition: 0,
         diameterHistory: [diameter],
       },
       states: {
@@ -25,11 +27,23 @@ export const createCircleMachine = ({ x, y, diameter, id }) =>
             [circleActions.RESIZE]: 'resizing',
             [circleActions.UNDO_UPDATE_DIAMETER]: {
               actions: assign((context) => {
-                const { diameterHistory } = context;
-                diameterHistory.pop();
+                const { diameterHistory, diameterPosition } = context;
+                const previousDiameter = diameterHistory[diameterPosition - 1];
+
                 return {
-                  diameter: diameterHistory[diameterHistory.length - 1],
-                  diameterHistory: [...diameterHistory],
+                  diameter: previousDiameter,
+                  diameterPosition: diameterPosition - 1,
+                };
+              }),
+            },
+            [circleActions.REDO_UPDATE_DIAMETER]: {
+              actions: assign((context) => {
+                const { diameterHistory, diameterPosition } = context;
+                const nextDiameter = diameterHistory[diameterPosition + 1];
+
+                return {
+                  diameter: nextDiameter,
+                  diameterPosition: diameterPosition + 1,
                 };
               }),
             },
@@ -57,11 +71,14 @@ export const createCircleMachine = ({ x, y, diameter, id }) =>
         updateDiameter: assign({
           diameter: (_, event) => event.value,
         }),
-        updateDiameterHistory: assign({
-          diameterHistory: (context) => {
-            const { diameterHistory, diameter } = context;
-            return [...diameterHistory, diameter];
-          },
+        updateDiameterHistory: assign((context) => {
+          const { diameterHistory, diameter } = context;
+          const newHistory = [...diameterHistory, diameter];
+
+          return {
+            diameterHistory: newHistory,
+            diameterPosition: newHistory.length - 1,
+          };
         }),
         notifyCircleParent: sendParent({
           type: circleActions.UPDATE_DIAMETER,

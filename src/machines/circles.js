@@ -87,10 +87,10 @@ const circlesMachine = Machine(
             cond: 'canRedo',
             actions: actions.choose([
               { cond: 'shouldRedoDraw', actions: 'redoDrawCircle' },
-              // {
-              //   cond: 'shouldUndoUpdateDiameter',
-              //   actions: 'undoUpdateDiameter',
-              // },
+              {
+                cond: 'shouldRedoUpdateDiameter',
+                actions: 'redoUpdateDiameter',
+              },
             ]),
           },
           [circlesActions.RESET]: {
@@ -108,6 +108,15 @@ const circlesMachine = Machine(
         return {
           commands: commands.slice(0, commands.length - 1),
           commandsToRedo: commandsToRedo.concat(commandToUndo),
+        };
+      }),
+      applyRedoUpdateDiameterCommand: assign((context) => {
+        const { commands, commandsToRedo } = context;
+        const commandToRedo = commandsToRedo[commandsToRedo.length - 1];
+
+        return {
+          commands: commands.concat(commandToRedo),
+          commandsToRedo: commandsToRedo.slice(0, commandsToRedo.length - 1),
         };
       }),
       undoDrawCircle: assign((context) => {
@@ -131,7 +140,7 @@ const circlesMachine = Machine(
             id,
             ref,
           }),
-          commandsToRedo: commandsToRedo.slice(0, circles.length - 1),
+          commandsToRedo: commandsToRedo.slice(0, commandsToRedo.length - 1),
         };
       }),
       undoUpdateDiameter: actions.pure((context) => {
@@ -143,6 +152,17 @@ const circlesMachine = Machine(
         return [
           send(circleActions.UNDO_UPDATE_DIAMETER, { to: circle.ref }),
           'consumeUndoCommand',
+        ];
+      }),
+      redoUpdateDiameter: actions.pure((context) => {
+        const { circles, commandsToRedo } = context;
+        const commandToRedo = commandsToRedo[commandsToRedo.length - 1];
+        const circle = circles.find(
+          (circle) => circle.id === commandToRedo.circleId,
+        );
+        return [
+          send(circleActions.REDO_UPDATE_DIAMETER, { to: circle.ref }),
+          'applyRedoUpdateDiameterCommand',
         ];
       }),
     },
