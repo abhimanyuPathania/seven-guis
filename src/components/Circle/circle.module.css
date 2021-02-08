@@ -2,5 +2,11 @@
   opacity: 0.9;
   cursor: pointer;
   border-radius: 50%;
-  background-color: #76e4f7;
+  background-color: #fbb6ce;
+  transition: all 300ms ease;
+}
+
+.circle.resizing,
+.circle:hover {
+  background-color: #f687b3;
 }

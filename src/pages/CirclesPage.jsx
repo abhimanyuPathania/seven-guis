@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { useMachine } from '@xstate/react';
 import { AnimatePresence } from 'framer-motion';
-import { Box, Button, Stack, Heading } from '@chakra-ui/react';
+import { Box, Button, Stack, Heading, useColorMode } from '@chakra-ui/react';
 
 import Circle from '../components/Circle/Circle';
 import circlesMachine, {
@@ -13,6 +13,7 @@ import circlesMachine, {
 
 export default function CirclesPage() {
   const [current, send] = useMachine(circlesMachine);
+  const { colorMode } = useColorMode();
   const {
     context,
     context: { circles },
@@ -49,8 +50,8 @@ export default function CirclesPage() {
           borderRadius="md"
           borderWidth="1px"
           h="240px"
-          backgroundColor="gray.900"
-          borderColor="gray.400"
+          backgroundColor={colorMode === 'dark' ? 'gray.900' : 'gray.100'}
+          borderColor={colorMode === 'dark' ? 'gray.400' : 'gray.200'}
           overflow="hidden"
           position="relative"
           onClick={onCanvasClick}

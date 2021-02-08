@@ -16,6 +16,7 @@ import {
   SliderFilledTrack,
   SliderThumb,
 } from '@chakra-ui/react';
+import cx from 'classnames';
 
 import { circleActions } from '../../machines/circle';
 import css from './circle.module.css';
@@ -58,7 +59,6 @@ function Circle(props) {
           animate={{ scale: 1 }}
           exit={{ scale: 0 }}
           transition={{ duration: 0.5 }}
-          className={css.circle}
           style={{
             position: 'absolute',
             width: size,
@@ -67,6 +67,9 @@ function Circle(props) {
             left,
             ...style,
           }}
+          className={cx(css.circle, {
+            [css.resizing]: currentState === 'resizing',
+          })}
           {...otherProps}
           onClick={onCircleClick}
         />
