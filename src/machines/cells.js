@@ -1,5 +1,10 @@
 import { Machine, assign } from 'xstate';
 
+// columnNumber is '1' indexed
+export function getColumnCode(columnNumber) {
+  return String.fromCharCode(columnNumber + 64);
+}
+
 function buildCellDataMap(rows, colums) {
   const map = {};
 
@@ -8,7 +13,8 @@ function buildCellDataMap(rows, colums) {
       if (!map[r]) {
         map[r] = {};
       }
-      map[r][c] = { row: r, column: c };
+      const columnCode = getColumnCode(c);
+      map[r][columnCode] = { row: r, column: columnCode };
     }
   }
 
@@ -30,7 +36,7 @@ const cellsMachine = Machine({
   initial: 'active',
   context: {
     rows: INITIAL_ROWS,
-    colums: INITIAL_COLUMNS,
+    columns: INITIAL_COLUMNS,
     cells: buildCellDataMap(INITIAL_ROWS, INITIAL_COLUMNS),
   },
   states: {
