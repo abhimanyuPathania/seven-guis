@@ -20,7 +20,7 @@ export default function CellsPage() {
   const [state, send] = useMachine(cellsMachine);
   const { colorMode } = useColorMode();
   const {
-    context: { cells, columns },
+    context: { cells, columns, rows },
   } = state;
   const cellWidth = 90;
   const cellHeight = 35;
@@ -49,6 +49,28 @@ export default function CellsPage() {
     return columnHeaders;
   }
 
+  function renderRowHeaders() {
+    const columnHeaders = [];
+    // render one extra row
+    for (let r = 0; r <= rows; r += 1) {
+      columnHeaders.push(
+        <Flex
+          width="50px"
+          height={cellHeight}
+          key={r}
+          backgroundColor={headerBackgroundColor}
+          borderColor={cellBorderColor}
+          borderWidth="1px"
+          justify="center"
+          align="center"
+          fontWeight="bold">
+          {r > 0 ? r : ' '}
+        </Flex>,
+      );
+    }
+    return columnHeaders;
+  }
+
   function renderCells() {
     const cellComponents = [];
     Object.values(cells).forEach((row) => {
@@ -67,14 +89,19 @@ export default function CellsPage() {
   return (
     <Box maxW="2xl" mx="auto" p="2">
       <Heading mb="6">7. Cells</Heading>
-      <Box borderColor="gray.200" borderWidth="0px" mt="2" overflowX="scroll">
-        <Flex h={cellHeight}>{renderColumnHeaders()}</Flex>
-        <SimpleGrid
-          templateColumns={`repeat(10, ${cellWidth}px)`}
-          templateRows={`repeat(10, ${cellHeight}px)`}>
-          {renderCells()}
-        </SimpleGrid>
-      </Box>
+      <Flex>
+        <Flex direction="column" backgroundColor={headerBackgroundColor}>
+          {renderRowHeaders()}
+        </Flex>
+        <Box overflowX="scroll">
+          <Flex h={cellHeight}>{renderColumnHeaders()}</Flex>
+          <SimpleGrid
+            templateColumns={`repeat(10, ${cellWidth}px)`}
+            templateRows={`repeat(10, ${cellHeight}px)`}>
+            {renderCells()}
+          </SimpleGrid>
+        </Box>
+      </Flex>
     </Box>
   );
 }
