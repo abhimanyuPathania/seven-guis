@@ -10,6 +10,7 @@ import FlightBookerPage from './pages/FlightBookerPage';
 import TimerPage from './pages/TimerPage';
 import CrudPage from './pages/CrudPage';
 import CirclesPage from './pages/CirclesPage';
+import CellsPage from './pages/CellsPage';
 import { ROUTES_MAP } from './commons/enums';
 import theme from './commons/theme';
 
@@ -37,6 +38,7 @@ function App() {
             <Route path={ROUTES_MAP.timer} component={TimerPage} />
             <Route path={ROUTES_MAP.crud} component={CrudPage} />
             <Route path={ROUTES_MAP.circles} component={CirclesPage} />
+            <Route path={ROUTES_MAP.cells} component={CellsPage} />
             <Route component={LandingPage} />
           </Switch>
         </Box>

@@ -35,6 +35,12 @@ export const ROUTES = [
     path: '/circle-drawer',
     label: 'Circle Drawer',
   },
+  {
+    no: 7,
+    name: 'cells',
+    path: '/cells',
+    label: 'Cells',
+  },
 ];
 
 export const ROUTES_MAP = Object.fromEntries(
