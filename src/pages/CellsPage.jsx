@@ -26,7 +26,7 @@ export default function CellsPage() {
   const cellHeight = 35;
   const cellBorderColor = colorMode === 'dark' ? 'gray.600' : 'gray.300';
   const headerBackgroundColor = colorMode === 'dark' ? 'gray.700' : 'gray.200';
-  console.log('cells', cells);
+  // console.log('cells', cells);
 
   function renderColumnHeaders() {
     const columnHeaders = [];
@@ -72,6 +72,8 @@ export default function CellsPage() {
   }
 
   function renderCells() {
+    if (!cells) return null;
+
     const cellComponents = [];
     Object.values(cells).forEach((row) => {
       const cellsInRow = Object.values(row);

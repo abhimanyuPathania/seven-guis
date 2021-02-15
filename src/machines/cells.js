@@ -1,4 +1,6 @@
-import { Machine, assign } from 'xstate';
+import { Machine, assign, spawn } from 'xstate';
+
+import { createCellMachine } from './cell';
 
 // columnNumber is '1' indexed
 export function getColumnCode(columnNumber) {
@@ -14,7 +16,11 @@ function buildCellDataMap(rows, colums) {
         map[r] = {};
       }
       const columnCode = getColumnCode(c);
-      map[r][columnCode] = { row: r, column: columnCode };
+      map[r][columnCode] = {
+        row: r,
+        column: columnCode,
+        ref: spawn(createCellMachine({ row: r, column: columnCode })),
+      };
     }
   }
 
@@ -37,10 +43,13 @@ const cellsMachine = Machine({
   context: {
     rows: INITIAL_ROWS,
     columns: INITIAL_COLUMNS,
-    cells: buildCellDataMap(INITIAL_ROWS, INITIAL_COLUMNS),
+    cells: null,
   },
   states: {
     active: {
+      entry: assign({
+        cells: (context) => buildCellDataMap(context.rows, context.columns),
+      }),
       on: {
         [cellsActions.INCREMENT]: {
           actions: assign({ count: (context) => context.count + 1 }),
