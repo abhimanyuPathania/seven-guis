@@ -26,7 +26,7 @@ export default function CellsPage() {
   const cellHeight = 35;
   const cellBorderColor = colorMode === 'dark' ? 'gray.600' : 'gray.300';
   const headerBackgroundColor = colorMode === 'dark' ? 'gray.700' : 'gray.200';
-  // console.log('cells', cells);
+  console.log('parent::cells', cells);
 
   function renderColumnHeaders() {
     const columnHeaders = [];

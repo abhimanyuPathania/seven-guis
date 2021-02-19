@@ -1,6 +1,6 @@
-import { Machine, assign, spawn } from 'xstate';
+import { Machine, assign, spawn, actions, send } from 'xstate';
 
-import { createCellMachine } from './cell';
+import { createCellMachine, cellActions, getCellId } from './cell';
 
 // columnNumber is '1' indexed
 export function getColumnCode(columnNumber) {
@@ -19,6 +19,7 @@ function buildCellDataMap(rows, colums) {
       map[r][columnCode] = {
         row: r,
         column: columnCode,
+        value: '',
         ref: spawn(createCellMachine({ row: r, column: columnCode })),
       };
     }
@@ -29,37 +30,63 @@ function buildCellDataMap(rows, colums) {
 
 export const cellsStates = {};
 
-export const cellsActions = {
-  INCREMENT: 'INCREMENT',
-  RESET: 'RESET',
-};
+export const cellsActions = {};
 
-const INITIAL_ROWS = 10;
-const INITIAL_COLUMNS = 10;
+const INITIAL_ROWS = 1;
+const INITIAL_COLUMNS = 2;
 
-const cellsMachine = Machine({
-  id: 'cells',
-  initial: 'active',
-  context: {
-    rows: INITIAL_ROWS,
-    columns: INITIAL_COLUMNS,
-    cells: null,
-  },
-  states: {
-    active: {
-      entry: assign({
-        cells: (context) => buildCellDataMap(context.rows, context.columns),
-      }),
-      on: {
-        [cellsActions.INCREMENT]: {
-          actions: assign({ count: (context) => context.count + 1 }),
-        },
-        [cellsActions.RESET]: {
-          actions: assign({ count: () => 0 }),
+const cellsMachine = Machine(
+  {
+    id: 'cells',
+    initial: 'active',
+    context: {
+      rows: INITIAL_ROWS,
+      columns: INITIAL_COLUMNS,
+      cells: null,
+      formulas: {},
+    },
+    states: {
+      active: {
+        entry: assign({
+          cells: (context) => buildCellDataMap(context.rows, context.columns),
+        }),
+        on: {
+          [cellActions.CELL_VALUE_CHANGED]: {
+            actions: [
+              'onChangeCellValue',
+              'computeFormulas',
+              'notifyFormulaCells',
+            ],
+          },
         },
       },
     },
   },
-});
+  {
+    actions: {
+      onChangeCellValue: assign((context, event) => {
+        const { cells, formulas } = context;
+        const { value, row, column } = event;
+        const cellId = getCellId(row, column);
+        console.log('onChangeCellValue', context);
+        return { formulas };
+      }),
+      computeFormulas: assign((context, event) => {
+        console.log('computeFormulas');
+        return context;
+      }),
+      notifyFormulaCells: send(
+        { type: cellActions.CELL_FORMULA_COMPUTED },
+        {
+          to: (context, event) => {
+            const { cells } = context;
+            const { row, column } = event;
+            return cells[row][column].ref;
+          },
+        },
+      ),
+    },
+  },
+);
 
 export default cellsMachine;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import { Editable, EditableInput, EditablePreview } from '@chakra-ui/react';
 import { useActor } from '@xstate/react';
 import PropTypes from 'prop-types';
@@ -7,7 +7,8 @@ import { cellActions } from '../../machines/cell';
 
 function Cell(props) {
   const { cell, cellBorderColor } = props;
-  const [testState, setTestState] = useState(false);
+  const cellId = `${cell.row}${cell.column}`;
+  // const [testState, setTestState] = useState(false);
   const [state, send] = useActor(cell.ref);
   const {
     context: { value },
@@ -19,7 +20,7 @@ function Cell(props) {
     send(cellActions.VIEW_CELL);
   }
 
-  // console.log('cell', context, state);
+  console.log(`cell:${cellId}`, context.value);
   // console.log('currentState', currentState);
   return (
     <Editable
@@ -46,4 +47,4 @@ Cell.propTypes = {
   cellBorderColor: PropTypes.string.isRequired,
 };
 
-export default Cell;
+export default React.memo(Cell);

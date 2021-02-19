@@ -1,6 +1,6 @@
 import { Machine, assign, sendParent, actions } from 'xstate';
 
-function getCellId(row, column) {
+export function getCellId(row, column) {
   return `${row}${column}`;
 }
 
@@ -28,8 +28,6 @@ function isValueFormula(value) {
 
 export const cellStates = {
   VIEWING: 'VIEWING',
-  VIEWING_VALUE: 'VALUE',
-  VIEWING_FORMULA: 'FORMULA',
   EDITING: 'EDITING',
 };
 
@@ -37,7 +35,8 @@ export const cellActions = {
   EDIT_CELL: 'EDIT_CELL',
   VIEW_CELL: 'VIEW_CELL',
   UPDATE_VALUE: 'UPDATE_VALUE',
-  CLEAR_VALUE: 'CLEAR_VALUE',
+  CELL_VALUE_CHANGED: 'CELL_VALUE_CHANGED',
+  CELL_FORMULA_COMPUTED: 'CELL_FORMULA_COMPUTED',
 };
 
 export const createCellMachine = ({ row, column }) =>
@@ -49,36 +48,38 @@ export const createCellMachine = ({ row, column }) =>
         row,
         column,
         value: '',
+        previousValue: '',
       },
       states: {
         [cellStates.VIEWING]: {
           initial: cellStates.VIEWING_VALUE,
-          states: {
-            [cellStates.VIEWING_VALUE]: {},
-            [cellStates.VIEWING_FORMULA]: {},
-          },
+          entry: actions.choose([
+            {
+              cond: 'hasValueChanged',
+              actions: [
+                sendParent((context) => ({
+                  type: cellActions.CELL_VALUE_CHANGED,
+                  row: context.row,
+                  column: context.column,
+                  value: context.value,
+                })),
+              ],
+            },
+          ]),
           on: {
             [cellActions.EDIT_CELL]: cellStates.EDITING,
+            [cellActions.CELL_FORMULA_COMPUTED]: {
+              actions: actions.log('child::CELL_FORMULA_COMPUTED'),
+            },
           },
         },
         [cellStates.EDITING]: {
+          entry: assign({ previousValue: (context) => context.value }),
           on: {
             [cellActions.UPDATE_VALUE]: {
               actions: assign({ value: (_, event) => event.value }),
             },
-            [cellActions.CLEAR_VALUE]: {
-              actions: assign({ value: () => '' }),
-            },
-            [cellActions.VIEW_CELL]: [
-              {
-                target: `${cellStates.VIEWING}.${cellStates.VIEWING_VALUE}`,
-                cond: 'isValue',
-              },
-              {
-                target: `${cellStates.VIEWING}.${cellStates.VIEWING_FORMULA}`,
-                cond: 'isValueFormula',
-              },
-            ],
+            [cellActions.VIEW_CELL]: cellStates.VIEWING,
           },
           exit: assign({
             value: (context) => sanitizeCellValue(context.value),
@@ -91,6 +92,7 @@ export const createCellMachine = ({ row, column }) =>
       guards: {
         isValueFormula: (context) => isValueFormula(context.value),
         isValue: (context) => !isValueFormula(context.value),
+        hasValueChanged: (context) => context.previousValue !== context.value,
       },
     },
   );
