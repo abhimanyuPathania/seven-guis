@@ -49,7 +49,6 @@ export const createCellMachine = ({ row, column }) =>
         row,
         column,
         value: '',
-        preEditValue: '',
       },
       states: {
         [cellStates.VIEWING]: {
@@ -63,7 +62,6 @@ export const createCellMachine = ({ row, column }) =>
           },
         },
         [cellStates.EDITING]: {
-          entry: assign({ preEditValue: (context) => context.value }),
           on: {
             [cellActions.UPDATE_VALUE]: {
               actions: assign({ value: (_, event) => event.value }),

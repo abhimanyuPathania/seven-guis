@@ -20,7 +20,7 @@ function Cell(props) {
   }
 
   // console.log('cell', context, state);
-  console.log('currentState', currentState);
+  // console.log('currentState', currentState);
   return (
     <Editable
       value={value}
