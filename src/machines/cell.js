@@ -69,7 +69,8 @@ export const createCellMachine = ({ row, column }) =>
           on: {
             [cellActions.EDIT_CELL]: cellStates.EDITING,
             [cellActions.CELL_FORMULA_COMPUTED]: {
-              actions: actions.log('child::CELL_FORMULA_COMPUTED'),
+              actions: (context, event) =>
+                console.log('CELL_FORMULA_COMPUTED', event),
             },
           },
         },

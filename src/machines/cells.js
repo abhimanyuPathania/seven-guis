@@ -20,7 +20,9 @@ function buildCellDataMap(rows, colums) {
         row: r,
         column: columnCode,
         value: '',
-        ref: spawn(createCellMachine({ row: r, column: columnCode })),
+        ref: spawn(createCellMachine({ row: r, column: columnCode }), {
+          name: getCellId(r, columnCode),
+        }),
       };
     }
   }
@@ -76,12 +78,14 @@ const cellsMachine = Machine(
         return context;
       }),
       notifyFormulaCells: send(
-        { type: cellActions.CELL_FORMULA_COMPUTED },
+        (context) => {
+          return { type: cellActions.CELL_FORMULA_COMPUTED, foo: 'bar' };
+        },
         {
-          to: (context, event) => {
-            const { cells } = context;
+          to: (_, event) => {
             const { row, column } = event;
-            return cells[row][column].ref;
+            console.log('send event to choild');
+            return getCellId(row, column);
           },
         },
       ),
