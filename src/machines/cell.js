@@ -43,6 +43,7 @@ export const createCellMachine = ({ row, column }) =>
         column,
         value: '',
         previousValue: '',
+        computedValue: '',
       },
       states: {
         [cellStates.VIEWING]: {
@@ -51,6 +52,9 @@ export const createCellMachine = ({ row, column }) =>
             {
               cond: 'hasValueChanged',
               actions: [
+                assign({
+                  computedValue: () => '',
+                }),
                 sendParent((context) => ({
                   type: cellActions.CELL_VALUE_CHANGED,
                   row: context.row,
@@ -63,8 +67,9 @@ export const createCellMachine = ({ row, column }) =>
           on: {
             [cellActions.EDIT_CELL]: cellStates.EDITING,
             [cellActions.CELL_FORMULA_COMPUTED]: {
-              actions: (context, event) =>
-                console.log('CELL_FORMULA_COMPUTED', event),
+              actions: assign({
+                computedValue: (_, event) => event.computedValue,
+              }),
             },
           },
         },

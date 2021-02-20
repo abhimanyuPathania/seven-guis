@@ -1,20 +1,11 @@
 import { useMachine } from '@xstate/react';
-import {
-  Box,
-  Button,
-  Stack,
-  Heading,
-  Text,
-  SimpleGrid,
-  Flex,
-  useColorMode,
-} from '@chakra-ui/react';
+import { Box, Heading, SimpleGrid, Flex, useColorMode } from '@chakra-ui/react';
 
 import cellsMachine, { getColumnCode } from '../machines/cells';
 import Cell from '../components/Cell/Cell';
 
 export default function CellsPage() {
-  const [state, send] = useMachine(cellsMachine);
+  const [state] = useMachine(cellsMachine);
   const { colorMode } = useColorMode();
   const {
     context: { cells, columns, rows },

@@ -3,28 +3,28 @@ import { Editable, EditableInput, EditablePreview } from '@chakra-ui/react';
 import { useActor } from '@xstate/react';
 import PropTypes from 'prop-types';
 
-import { cellActions } from '../../machines/cell';
+import { cellActions, cellStates } from '../../machines/cell';
 
 function Cell(props) {
   const { cell, cellBorderColor } = props;
-  const cellId = `${cell.row}${cell.column}`;
-  // const [testState, setTestState] = useState(false);
+  // const cellId = `${cell.row}${cell.column}`;
   const [state, send] = useActor(cell.ref);
   const {
-    context: { value },
-    context,
+    context: { value, computedValue },
     value: currentState,
   } = state;
 
   function viewCell() {
     send(cellActions.VIEW_CELL);
   }
+  const cellInputValue =
+    currentState === cellStates.EDITING ? value : computedValue || value;
 
-  console.log(`cell:${cellId}`, context.value);
+  // console.log(`cell:${cellId}::cellInputValue`, cellInputValue);
   // console.log('currentState', currentState);
   return (
     <Editable
-      value={value}
+      value={cellInputValue}
       borderColor={cellBorderColor}
       borderWidth="1px"
       fontSize="sm"
