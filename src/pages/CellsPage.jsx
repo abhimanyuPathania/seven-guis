@@ -1,5 +1,5 @@
 import { useMachine } from '@xstate/react';
-import { Box, Heading, SimpleGrid, Flex, useColorMode } from '@chakra-ui/react';
+import { Box, SimpleGrid, Flex, useColorMode } from '@chakra-ui/react';
 
 import cellsMachine from '../machines/cells';
 import Cell from '../components/Cell/Cell';
