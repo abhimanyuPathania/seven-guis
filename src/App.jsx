@@ -4,14 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import Navbar from './components/Navbar/Navbar';
 import LandingPage from './pages/LandingPage';
-import CounterPage from './pages/CounterPage';
-import TemperatureConverterPage from './pages/TemperatureConverterPage';
-import FlightBookerPage from './pages/FlightBookerPage';
-import TimerPage from './pages/TimerPage';
-import CrudPage from './pages/CrudPage';
-import CirclesPage from './pages/CirclesPage';
-import CellsPage from './pages/CellsPage';
-import { ROUTES_MAP } from './commons/enums';
+import { ROUTES } from './commons/routesConfig';
 import theme from './commons/theme';
 
 function App() {
@@ -23,22 +16,24 @@ function App() {
           marginTop="45px"
           mx="auto"
           py="8"
-          width={{ md: '90%', lg: '70%' }}
-          px={{ base: '4', sm: '6' }}>
+          width={{ md: '90%', lg: '55%' }}
+          maxW={{ lg: '800px' }}
+          px={{ base: '4', sm: '6' }}
+          borderWidth={'1px'}
+          borderColor="red.200">
           <Switch>
-            <Route path={ROUTES_MAP.counter} component={CounterPage} />
-            <Route
-              path={ROUTES_MAP.temperatureConverter}
-              component={TemperatureConverterPage}
-            />
-            <Route
-              path={ROUTES_MAP.flightBooker}
-              component={FlightBookerPage}
-            />
-            <Route path={ROUTES_MAP.timer} component={TimerPage} />
-            <Route path={ROUTES_MAP.crud} component={CrudPage} />
-            <Route path={ROUTES_MAP.circles} component={CirclesPage} />
-            <Route path={ROUTES_MAP.cells} component={CellsPage} />
+            {ROUTES.map((route) => {
+              const { path, component: PageComponent, no } = route;
+              return (
+                <Route
+                  key={no}
+                  path={path}
+                  render={(routeProps) => (
+                    <PageComponent {...routeProps} routeConfig={route} />
+                  )}
+                />
+              );
+            })}
             <Route component={LandingPage} />
           </Switch>
         </Box>

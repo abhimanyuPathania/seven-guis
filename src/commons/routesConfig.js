@@ -1,48 +1,60 @@
+import CounterPage from '../pages/CounterPage';
+import TemperatureConverterPage from '../pages/TemperatureConverterPage';
+import FlightBookerPage from '../pages/FlightBookerPage';
+import TimerPage from '../pages/TimerPage';
+import CrudPage from '../pages/CrudPage';
+import CirclesPage from '../pages/CirclesPage';
+import CellsPage from '../pages/CellsPage';
+
 export const ROUTES = [
   {
     no: 1,
     name: 'counter',
     path: '/counter',
     label: 'Counter',
+    component: CounterPage,
+    externalLink: 'https://eugenkiss.github.io/7guis/tasks#counter',
   },
   {
     no: 2,
     name: 'temperatureConverter',
     path: '/temperature-converter',
     label: 'Temperature Converter',
+    component: TemperatureConverterPage,
   },
   {
     no: 3,
     name: 'flightBooker',
     path: '/flight-booker',
     label: 'Flight Booker',
+    component: FlightBookerPage,
   },
   {
     no: 4,
     name: 'timer',
     path: '/timer',
     label: 'Timer',
+    component: TimerPage,
   },
   {
     no: 5,
     name: 'crud',
     path: '/crud',
     label: 'CRUD',
+    component: CrudPage,
   },
   {
     no: 6,
     name: 'circles',
     path: '/circle-drawer',
     label: 'Circle Drawer',
+    component: CirclesPage,
   },
   {
     no: 7,
     name: 'cells',
     path: '/cells',
     label: 'Cells',
+    component: CellsPage,
   },
 ];
-
-export const ROUTES_MAP = Object.fromEntries(
-  ROUTES.map((route) => [route.name, route.path]),
-);

@@ -13,7 +13,7 @@ import DarkModeToggle from 'react-dark-mode-toggle';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 
 import Logo from '../Logo/Logo';
-import { ROUTES } from '../../commons/enums';
+import { ROUTES } from '../../commons/routesConfig';
 
 export default function LandingPage() {
   const { colorMode, toggleColorMode } = useColorMode();
