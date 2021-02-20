@@ -1,10 +1,16 @@
 import { Machine, assign, spawn, actions, send } from 'xstate';
 
-import { createCellMachine, cellActions, getCellId } from './cell';
+import { createCellMachine, cellActions } from './cell';
+import { getCellId, isValueAFormula, computeFormula } from '../commons/cells';
 
 // columnNumber is '1' indexed
 export function getColumnCode(columnNumber) {
   return String.fromCharCode(columnNumber + 64);
+}
+
+function getCellFromCellId(cells, cellId) {
+  const id = cellId.toUpperCase();
+  return cells[id[0]][id[1]];
 }
 
 function buildCellDataMap(rows, colums) {
@@ -34,8 +40,8 @@ export const cellsStates = {};
 
 export const cellsActions = {};
 
-const INITIAL_ROWS = 1;
-const INITIAL_COLUMNS = 2;
+const INITIAL_ROWS = 3;
+const INITIAL_COLUMNS = 10;
 
 const cellsMachine = Machine(
   {
@@ -55,7 +61,7 @@ const cellsMachine = Machine(
         on: {
           [cellActions.CELL_VALUE_CHANGED]: {
             actions: [
-              'onChangeCellValue',
+              'updateCellValueAndFormulas',
               'computeFormulas',
               'notifyFormulaCells',
             ],
@@ -66,29 +72,53 @@ const cellsMachine = Machine(
   },
   {
     actions: {
-      onChangeCellValue: assign((context, event) => {
-        const { cells, formulas } = context;
+      updateCellValueAndFormulas: assign((context, event) => {
+        const { formulas, cells } = context;
         const { value, row, column } = event;
+        const isFormula = isValueAFormula(value);
         const cellId = getCellId(row, column);
-        console.log('onChangeCellValue', context);
-        return { formulas };
+
+        // add to formulas
+        if (isFormula) formulas[cellId] = value;
+        // remove from formulas if it was earlier a formula
+        if (!isFormula && formulas[cellId]) delete formulas[cellId];
+        // update cell value
+        cells[row][column].value = value;
+
+        return { formulas, cells };
       }),
-      computeFormulas: assign((context, event) => {
-        console.log('computeFormulas');
-        return context;
+      computeFormulas: assign((context) => {
+        const { formulas, cells } = context;
+        const computedFormulas = {};
+        // compute all formulas
+        Object.keys(formulas).forEach((cellId) => {
+          const cellFormula = formulas[cellId];
+          const computedValue = computeFormula(cellFormula, cells);
+          computedFormulas[cellId] = computedValue;
+        });
+        // update cell values to computed values
+        Object.keys(computedFormulas).forEach((cellId) => {
+          const computedValue = computedFormulas[cellId];
+          const cell = getCellFromCellId(cells, cellId);
+          cell.value = computedValue;
+        });
+        return { cells: { ...cells } };
       }),
-      notifyFormulaCells: send(
-        (context) => {
-          return { type: cellActions.CELL_FORMULA_COMPUTED, foo: 'bar' };
-        },
-        {
-          to: (_, event) => {
-            const { row, column } = event;
-            console.log('send event to choild');
-            return getCellId(row, column);
-          },
-        },
-      ),
+      notifyFormulaCells: actions.pure((context) => {
+        const { formulas, cells } = context;
+        const events = Object.keys(formulas).map((cellId) => {
+          const cell = getCellFromCellId(cells, cellId);
+          return send(
+            {
+              type: cellActions.CELL_FORMULA_COMPUTED,
+              computedValue: cell.value,
+            },
+            { to: cell.ref },
+          );
+        });
+
+        return events;
+      }),
     },
   },
 );

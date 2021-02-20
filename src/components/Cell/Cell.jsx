@@ -27,6 +27,7 @@ function Cell(props) {
       value={value}
       borderColor={cellBorderColor}
       borderWidth="1px"
+      fontSize="sm"
       selectAllOnFocus={false}
       onChange={(value) => {
         send({ type: cellActions.UPDATE_VALUE, value });

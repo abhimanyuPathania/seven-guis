@@ -1,8 +1,6 @@
 import { Machine, assign, sendParent, actions } from 'xstate';
 
-export function getCellId(row, column) {
-  return `${row}${column}`;
-}
+import { getCellId } from '../commons/cells';
 
 function sanitizeCellValue(value) {
   const trimmedValue = value.trim();
@@ -20,10 +18,6 @@ function sanitizeCellValue(value) {
   }
 
   return sanitizedValue;
-}
-
-function isValueFormula(value) {
-  return value[0] === '=';
 }
 
 export const cellStates = {
@@ -91,8 +85,6 @@ export const createCellMachine = ({ row, column }) =>
     {
       actions: {},
       guards: {
-        isValueFormula: (context) => isValueFormula(context.value),
-        isValue: (context) => !isValueFormula(context.value),
         hasValueChanged: (context) => context.previousValue !== context.value,
       },
     },
