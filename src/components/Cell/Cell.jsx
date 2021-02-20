@@ -39,7 +39,6 @@ function Cell(props) {
     currentState === cellStates.EDITING ? value : computedValue || value;
 
   // console.log(`cell:${cellId}::inputError`, inputError);
-  // console.log('inputError', inputError);
   return (
     <Editable
       value={cellInputValue}

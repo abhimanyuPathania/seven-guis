@@ -1,3 +1,5 @@
+import { roundToTwo } from './helpers';
+
 export const INITIAL_ROWS = 3;
 export const INITIAL_COLUMNS = 10;
 export const rangeFormulaRegex = new RegExp(
@@ -109,7 +111,7 @@ export function computeFormula(formula, cells) {
     case 'sum':
       return sum.toString();
     case 'avg':
-      return (sum / (rowEnd - rowStart + 1)).toFixed(2);
+      return roundToTwo(sum / (rowEnd - rowStart + 1));
     default:
       return '';
   }
