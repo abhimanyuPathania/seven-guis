@@ -1,6 +1,6 @@
 import { roundToTwo } from './helpers';
 
-export const INITIAL_ROWS = 3;
+export const INITIAL_ROWS = 10;
 export const INITIAL_COLUMNS = 10;
 export const rangeFormulaRegex = new RegExp(
   '^=([a-z]+)\\(([a-z]\\d+):([a-z]\\d+)\\)$',
