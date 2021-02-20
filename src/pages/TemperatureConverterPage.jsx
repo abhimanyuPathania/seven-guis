@@ -6,15 +6,17 @@ import {
   Input,
   FormControl,
   FormLabel,
-  Heading,
   Flex,
 } from '@chakra-ui/react';
 
 import temperatureConverterMachine, {
   temperatureConverterActions,
 } from '../machines/temperatureConverter';
+import PageHeader from '../components/PageHeader/PageHeader';
+import * as shapes from '../commons/shapes';
 
-export default function TemperatureConverterPage() {
+function TemperatureConverterPage(props) {
+  const { routeConfig } = props;
   const [current, send] = useMachine(temperatureConverterMachine);
 
   function handleCelsiusInput(e) {
@@ -35,7 +37,7 @@ export default function TemperatureConverterPage() {
 
   return (
     <Box>
-      <Heading mb="6">2. Temperature Converter</Heading>
+      <PageHeader routeConfig={routeConfig} />
       <Stack direction={{ base: 'column', md: 'row' }} spacing="4">
         <FormControl id="celsius">
           <FormLabel>Celsius</FormLabel>
@@ -67,3 +69,9 @@ export default function TemperatureConverterPage() {
     </Box>
   );
 }
+
+TemperatureConverterPage.propTypes = {
+  routeConfig: shapes.routeConfig,
+};
+
+export default TemperatureConverterPage;

@@ -4,8 +4,11 @@ import { Box, Heading, SimpleGrid, Flex, useColorMode } from '@chakra-ui/react';
 import cellsMachine from '../machines/cells';
 import Cell from '../components/Cell/Cell';
 import { getColumnCode } from '../commons/cells';
+import PageHeader from '../components/PageHeader/PageHeader';
+import * as shapes from '../commons/shapes';
 
-export default function CellsPage() {
+function CellsPage(props) {
+  const { routeConfig } = props;
   const [state] = useMachine(cellsMachine);
   const { colorMode } = useColorMode();
   const {
@@ -77,21 +80,29 @@ export default function CellsPage() {
   }
 
   return (
-    <Box maxW="2xl" mx="auto" p="2">
-      <Heading mb="6">7. Cells</Heading>
-      <Flex>
-        <Flex direction="column" backgroundColor={headerBackgroundColor}>
-          {renderRowHeaders()}
+    <Box>
+      <PageHeader routeConfig={routeConfig} />
+      <Box maxW="2xl" mx="auto" p="2">
+        <Flex>
+          <Flex direction="column" backgroundColor={headerBackgroundColor}>
+            {renderRowHeaders()}
+          </Flex>
+          <Box overflowX="scroll">
+            <Flex h={cellHeight}>{renderColumnHeaders()}</Flex>
+            <SimpleGrid
+              templateColumns={`repeat(10, ${cellWidth}px)`}
+              templateRows={`repeat(10, ${cellHeight}px)`}>
+              {renderCells()}
+            </SimpleGrid>
+          </Box>
         </Flex>
-        <Box overflowX="scroll">
-          <Flex h={cellHeight}>{renderColumnHeaders()}</Flex>
-          <SimpleGrid
-            templateColumns={`repeat(10, ${cellWidth}px)`}
-            templateRows={`repeat(10, ${cellHeight}px)`}>
-            {renderCells()}
-          </SimpleGrid>
-        </Box>
-      </Flex>
+      </Box>
     </Box>
   );
 }
+
+CellsPage.propTypes = {
+  routeConfig: shapes.routeConfig,
+};
+
+export default CellsPage;

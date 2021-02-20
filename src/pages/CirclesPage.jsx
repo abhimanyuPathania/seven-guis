@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { useMachine } from '@xstate/react';
 import { AnimatePresence } from 'framer-motion';
-import { Box, Button, Stack, Heading, useColorMode } from '@chakra-ui/react';
+import { Box, Button, Stack, useColorMode } from '@chakra-ui/react';
 
 import Circle from '../components/Circle/Circle';
 import circlesMachine, {
@@ -10,8 +10,11 @@ import circlesMachine, {
   canRedo,
   DEFAULT_DIAMETER,
 } from '../machines/circles';
+import PageHeader from '../components/PageHeader/PageHeader';
+import * as shapes from '../commons/shapes';
 
-export default function CirclesPage() {
+function CirclesPage(props) {
+  const { routeConfig } = props;
   const [current, send] = useMachine(circlesMachine);
   const { colorMode } = useColorMode();
   const {
@@ -43,55 +46,63 @@ export default function CirclesPage() {
   }
 
   return (
-    <Box maxW="lg" mx="auto">
-      <Heading mb="6">6. Circle Drawer</Heading>
-      <Stack spacing="6" borderWidth="1px" padding="4" borderRadius="md">
-        <Box
-          borderRadius="md"
-          borderWidth="1px"
-          h="240px"
-          backgroundColor={colorMode === 'dark' ? 'gray.900' : 'gray.100'}
-          borderColor={colorMode === 'dark' ? 'gray.400' : 'gray.200'}
-          overflow="hidden"
-          position="relative"
-          onClick={onCanvasClick}
-          ref={canvasDivRef}>
-          <AnimatePresence>
-            {circles.map((circle) => {
-              return (
-                <Circle
-                  key={circle.id}
-                  circleRef={circle.ref}
-                  defaultDiameter={DEFAULT_DIAMETER}
-                />
-              );
-            })}
-          </AnimatePresence>
-        </Box>
-        <Stack direction="row" spacing="6" justify="center">
-          <Button
-            colorScheme="teal"
-            flex="1"
-            onClick={() => send(circlesActions.UNDO)}
-            disabled={!canUndo(context)}>
-            Undo
-          </Button>
-          <Button
-            colorScheme="teal"
-            flex="1"
-            onClick={() => send(circlesActions.REDO)}
-            disabled={!canRedo(context)}>
-            Redo
-          </Button>
-          <Button
-            colorScheme="teal"
-            flex="1"
-            variant="outline"
-            onClick={() => send(circlesActions.RESET)}>
-            Reset
-          </Button>
+    <Box>
+      <PageHeader routeConfig={routeConfig} />
+      <Box maxW="lg" mx="auto">
+        <Stack spacing="6" borderWidth="1px" padding="4" borderRadius="md">
+          <Box
+            borderRadius="md"
+            borderWidth="1px"
+            h="240px"
+            backgroundColor={colorMode === 'dark' ? 'gray.900' : 'gray.100'}
+            borderColor={colorMode === 'dark' ? 'gray.400' : 'gray.200'}
+            overflow="hidden"
+            position="relative"
+            onClick={onCanvasClick}
+            ref={canvasDivRef}>
+            <AnimatePresence>
+              {circles.map((circle) => {
+                return (
+                  <Circle
+                    key={circle.id}
+                    circleRef={circle.ref}
+                    defaultDiameter={DEFAULT_DIAMETER}
+                  />
+                );
+              })}
+            </AnimatePresence>
+          </Box>
+          <Stack direction="row" spacing="6" justify="center">
+            <Button
+              colorScheme="teal"
+              flex="1"
+              onClick={() => send(circlesActions.UNDO)}
+              disabled={!canUndo(context)}>
+              Undo
+            </Button>
+            <Button
+              colorScheme="teal"
+              flex="1"
+              onClick={() => send(circlesActions.REDO)}
+              disabled={!canRedo(context)}>
+              Redo
+            </Button>
+            <Button
+              colorScheme="teal"
+              flex="1"
+              variant="outline"
+              onClick={() => send(circlesActions.RESET)}>
+              Reset
+            </Button>
+          </Stack>
         </Stack>
-      </Stack>
+      </Box>
     </Box>
   );
 }
+
+CirclesPage.propTypes = {
+  routeConfig: shapes.routeConfig,
+};
+
+export default CirclesPage;

@@ -18,9 +18,7 @@ function App() {
           py="8"
           width={{ md: '90%', lg: '55%' }}
           maxW={{ lg: '800px' }}
-          px={{ base: '4', sm: '6' }}
-          borderWidth={'1px'}
-          borderColor="red.200">
+          px={{ base: '4', sm: '6' }}>
           <Switch>
             {ROUTES.map((route) => {
               const { path, component: PageComponent, no } = route;

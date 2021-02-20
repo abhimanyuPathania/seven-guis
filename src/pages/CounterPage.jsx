@@ -19,7 +19,6 @@ function CounterPage(props) {
   return (
     <Box>
       <PageHeader routeConfig={routeConfig} />
-
       <Box maxW="lg" mx="auto">
         <Box
           padding="3"

@@ -7,6 +7,12 @@ function PageHeaderLink(props) {
   const { colorMode } = useColorMode();
   const taskStrMap = {
     1: 'First task of',
+    2: 'Second task of',
+    3: 'Third task of',
+    4: 'Fourth task of',
+    5: 'Fifth task of',
+    6: 'Sixth task of',
+    7: 'Seventh task of',
   };
 
   return (

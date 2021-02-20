@@ -5,7 +5,6 @@ import {
   Stack,
   FormControl,
   FormLabel,
-  Heading,
   Progress,
   Slider,
   SliderTrack,
@@ -15,8 +14,11 @@ import {
 } from '@chakra-ui/react';
 
 import timerMachine, { timerActions } from '../machines/timer';
+import PageHeader from '../components/PageHeader/PageHeader';
+import * as shapes from '../commons/shapes';
 
-export default function TimerPage() {
+function TimerPage(props) {
+  const { routeConfig } = props;
   const [current, send] = useMachine(timerMachine);
   const { context } = current;
   const { targetTime, timeElapsed } = context;
@@ -24,8 +26,8 @@ export default function TimerPage() {
   const timerText = `${timeElapsed.toFixed(1)}s / ${targetTime.toFixed(1)}s`;
 
   return (
-    <Box maxW="md" mx="auto">
-      <Heading mb="6">4. Timer</Heading>
+    <Box>
+      <PageHeader routeConfig={routeConfig} />
       <Stack spacing="6" borderWidth="1px" padding="4" borderRadius="md">
         <Text
           fontSize="2xl"
@@ -74,3 +76,9 @@ export default function TimerPage() {
     </Box>
   );
 }
+
+TimerPage.propTypes = {
+  routeConfig: shapes.routeConfig,
+};
+
+export default TimerPage;
