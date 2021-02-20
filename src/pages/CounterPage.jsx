@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useMachine } from '@xstate/react';
 import {
   Box,
@@ -7,13 +6,11 @@ import {
   Input,
   FormControl,
   FormLabel,
-  Text,
 } from '@chakra-ui/react';
 
 import counterMachine, { counterActions } from '../machines/counter';
-import Blockquote from '../components/Blockquote/Blockquote';
-import PageHeading from '../components/PageHeading/PageHeading';
-import PageHeaderLink from '../components/PageHeaderLink/PageHeaderLink';
+import PageHeader from '../components/PageHeader/PageHeader';
+import * as shapes from '../commons/shapes';
 
 function CounterPage(props) {
   const { routeConfig } = props;
@@ -21,18 +18,7 @@ function CounterPage(props) {
 
   return (
     <Box>
-      <PageHeading routeConfig={routeConfig} />
-      <PageHeaderLink routeConfig={routeConfig} />
-      <Blockquote cite="https://tools.ietf.org/html/rfc1149">
-        <Text as="i">
-          Challenge: Understanding the basic ideas of a language/toolkit.
-        </Text>
-        <Text mt="4">
-          The task is to build a frame containing a label or read-only textfield
-          T and a button B. Initially, the value in T is “0” and each click of B
-          increases the value in T by one.
-        </Text>
-      </Blockquote>
+      <PageHeader routeConfig={routeConfig} />
 
       <Box maxW="lg" mx="auto">
         <Box
@@ -75,12 +61,7 @@ function CounterPage(props) {
 }
 
 CounterPage.propTypes = {
-  routeConfig: PropTypes.shape({
-    no: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    path: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-  }),
+  routeConfig: shapes.routeConfig,
 };
 
 export default CounterPage;

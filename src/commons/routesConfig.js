@@ -1,3 +1,6 @@
+import { Fragment } from 'react';
+import { Text } from '@chakra-ui/react';
+
 import CounterPage from '../pages/CounterPage';
 import TemperatureConverterPage from '../pages/TemperatureConverterPage';
 import FlightBookerPage from '../pages/FlightBookerPage';
@@ -14,6 +17,18 @@ export const ROUTES = [
     label: 'Counter',
     component: CounterPage,
     externalLink: 'https://eugenkiss.github.io/7guis/tasks#counter',
+    citation: (
+      <Fragment>
+        <Text as="i">
+          Challenge: Understanding the basic ideas of a language/toolkit.
+        </Text>
+        <Text mt="4">
+          The task is to build a frame containing a label or read-only textfield
+          T and a button B. Initially, the value in T is “0” and each click of B
+          increases the value in T by one.
+        </Text>
+      </Fragment>
+    ),
   },
   {
     no: 2,

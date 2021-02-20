@@ -5,10 +5,14 @@ import { ExternalLinkIcon } from '@chakra-ui/icons';
 function PageHeaderLink(props) {
   const { routeConfig, ...otherProps } = props;
   const { colorMode } = useColorMode();
+  const taskStrMap = {
+    1: 'First task of',
+  };
+
   return (
     <Text mb="4" {...otherProps}>
       <Text as="span" mr="1">
-        First task of
+        {taskStrMap[routeConfig.no]}
       </Text>
       <Link
         href={routeConfig.externalLink}
