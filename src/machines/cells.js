@@ -1,17 +1,15 @@
 import { Machine, assign, spawn, actions, send } from 'xstate';
 
 import { createCellMachine, cellActions } from './cell';
-import { getCellId, isValueAFormula, computeFormula } from '../commons/cells';
-
-// columnNumber is '1' indexed
-export function getColumnCode(columnNumber) {
-  return String.fromCharCode(columnNumber + 64);
-}
-
-function getCellFromCellId(cells, cellId) {
-  const id = cellId.toUpperCase();
-  return cells[id[0]][id[1]];
-}
+import {
+  getCellId,
+  isValueAFormula,
+  computeFormula,
+  getColumnCode,
+  getCellFromCellId,
+  INITIAL_COLUMNS,
+  INITIAL_ROWS,
+} from '../commons/cells';
 
 function buildCellDataMap(rows, colums) {
   const map = {};
@@ -35,13 +33,6 @@ function buildCellDataMap(rows, colums) {
 
   return map;
 }
-
-export const cellsStates = {};
-
-export const cellsActions = {};
-
-const INITIAL_ROWS = 3;
-const INITIAL_COLUMNS = 10;
 
 const cellsMachine = Machine(
   {

@@ -1,5 +1,10 @@
-import React from 'react';
-import { Editable, EditableInput, EditablePreview } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
+import {
+  Editable,
+  EditableInput,
+  EditablePreview,
+  useToast,
+} from '@chakra-ui/react';
 import { useActor } from '@xstate/react';
 import PropTypes from 'prop-types';
 
@@ -9,10 +14,23 @@ function Cell(props) {
   const { cell, cellBorderColor } = props;
   // const cellId = `${cell.row}${cell.column}`;
   const [state, send] = useActor(cell.ref);
+  const toast = useToast();
   const {
-    context: { value, computedValue },
+    context: { value, computedValue, inputError },
     value: currentState,
   } = state;
+
+  useEffect(() => {
+    if (!inputError) return;
+
+    toast({
+      title: 'Input error',
+      description: inputError,
+      status: 'error',
+      duration: 7000,
+      isClosable: true,
+    });
+  }, [inputError, toast]);
 
   function viewCell() {
     send(cellActions.VIEW_CELL);
@@ -20,8 +38,8 @@ function Cell(props) {
   const cellInputValue =
     currentState === cellStates.EDITING ? value : computedValue || value;
 
-  // console.log(`cell:${cellId}::cellInputValue`, cellInputValue);
-  // console.log('currentState', currentState);
+  // console.log(`cell:${cellId}::inputError`, inputError);
+  // console.log('inputError', inputError);
   return (
     <Editable
       value={cellInputValue}

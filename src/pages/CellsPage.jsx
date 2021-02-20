@@ -1,8 +1,9 @@
 import { useMachine } from '@xstate/react';
 import { Box, Heading, SimpleGrid, Flex, useColorMode } from '@chakra-ui/react';
 
-import cellsMachine, { getColumnCode } from '../machines/cells';
+import cellsMachine from '../machines/cells';
 import Cell from '../components/Cell/Cell';
+import { getColumnCode } from '../commons/cells';
 
 export default function CellsPage() {
   const [state] = useMachine(cellsMachine);
@@ -14,7 +15,6 @@ export default function CellsPage() {
   const cellHeight = 35;
   const cellBorderColor = colorMode === 'dark' ? 'gray.600' : 'gray.300';
   const headerBackgroundColor = colorMode === 'dark' ? 'gray.700' : 'gray.200';
-  console.log('parent::cells', cells);
 
   function renderColumnHeaders() {
     const columnHeaders = [];

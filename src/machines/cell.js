@@ -1,24 +1,6 @@
 import { Machine, assign, sendParent, actions } from 'xstate';
 
-import { getCellId } from '../commons/cells';
-
-function sanitizeCellValue(value) {
-  const trimmedValue = value.trim();
-  let sanitizedValue = trimmedValue;
-
-  if (trimmedValue[0] === '=') {
-    // formula
-    sanitizedValue = trimmedValue;
-  } else if (!Number.isNaN(Number(trimmedValue))) {
-    // entered value is a valid number
-    sanitizedValue = trimmedValue;
-  } else {
-    // clear all other values
-    sanitizedValue = '';
-  }
-
-  return sanitizedValue;
-}
+import { getCellId, sanitizeCellValue, getInputErrors } from '../commons/cells';
 
 export const cellStates = {
   VIEWING: 'VIEWING',
@@ -44,6 +26,7 @@ export const createCellMachine = ({ row, column }) =>
         value: '',
         previousValue: '',
         computedValue: '',
+        inputError: '',
       },
       states: {
         [cellStates.VIEWING]: {
@@ -74,7 +57,10 @@ export const createCellMachine = ({ row, column }) =>
           },
         },
         [cellStates.EDITING]: {
-          entry: assign({ previousValue: (context) => context.value }),
+          entry: assign({
+            previousValue: (context) => context.value,
+            inputError: '',
+          }),
           on: {
             [cellActions.UPDATE_VALUE]: {
               actions: assign({ value: (_, event) => event.value }),
@@ -82,6 +68,7 @@ export const createCellMachine = ({ row, column }) =>
             [cellActions.VIEW_CELL]: cellStates.VIEWING,
           },
           exit: assign({
+            inputError: (context) => getInputErrors(context.value),
             value: (context) => sanitizeCellValue(context.value),
           }),
         },
