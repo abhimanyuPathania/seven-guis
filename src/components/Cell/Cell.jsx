@@ -12,7 +12,6 @@ import { cellActions, cellStates } from '../../machines/cell';
 
 function Cell(props) {
   const { cell, cellBorderColor } = props;
-  // const cellId = `${cell.row}${cell.column}`;
   const [state, send] = useActor(cell.ref);
   const toast = useToast();
   const {
@@ -38,7 +37,6 @@ function Cell(props) {
   const cellInputValue =
     currentState === cellStates.EDITING ? value : computedValue || value;
 
-  // console.log(`cell:${cellId}::inputError`, inputError);
   return (
     <Editable
       value={cellInputValue}
@@ -55,7 +53,7 @@ function Cell(props) {
       <EditableInput
         borderRadius="0"
         pl="2"
-        // <Editable> `onEdit` is broken. Cannot call setState from inside it.
+        // <Editable> `onEdit` seems to be broken. Cannot call setState from inside it.
         onFocus={() => send(cellActions.EDIT_CELL)}
       />
     </Editable>
