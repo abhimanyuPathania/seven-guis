@@ -20,7 +20,7 @@ Tasks were implemented as a React based web app. State management was offloaded 
 
 ## Key Results
 
-State machines encapsulate entire business and even UI logic for the applications. State machines are re-usable and can be used with any UI framework.
+State machines encapsulate entire business and even UI logic for the applications. The machines written here are re-usable and can be used with any UI framework.
 
 **In this React implementation, `setState` was used zero times.**
 
