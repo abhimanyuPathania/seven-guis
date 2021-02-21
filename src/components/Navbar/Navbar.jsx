@@ -15,6 +15,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import Logo from '../Logo/Logo';
 import GithubIcon from '../GithubIcon/GithubIcon';
 import { ROUTES } from '../../commons/routesConfig';
+import { NAVBAR_HEIGHT } from '../../commons/enums';
 
 export default function LandingPage() {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -22,7 +23,7 @@ export default function LandingPage() {
   return (
     <Flex
       bgColor="teal.400"
-      height="45px"
+      height={NAVBAR_HEIGHT}
       px={{ base: 10, md: 12 }}
       pos="fixed"
       zIndex="docked"

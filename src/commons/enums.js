@@ -1,3 +1,5 @@
+export const NAVBAR_HEIGHT = '45px';
+
 export const boxWrapperStyles = {
   borderColor: 'gray.300',
   borderWidth: '1px',
