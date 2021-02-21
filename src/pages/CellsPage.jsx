@@ -82,7 +82,7 @@ function CellsPage(props) {
   return (
     <Box>
       <PageHeader routeConfig={routeConfig} />
-      <Box maxW="2xl" mx="auto" p="2">
+      <Box maxW="calc(100vw - 40px)" mx="auto" p="2">
         <Flex>
           <Flex direction="column" backgroundColor={headerBackgroundColor}>
             {renderRowHeaders()}

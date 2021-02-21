@@ -33,7 +33,7 @@ export default function LandingPage() {
       align="center"
       justify="space-between">
       <Flex align="center">
-        <Link as={RouterLink} to="/" marginRight="4">
+        <Link as={RouterLink} to="/" marginRight="4" title="Home">
           <Logo />
         </Link>
 
