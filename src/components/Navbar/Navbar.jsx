@@ -45,6 +45,7 @@ export default function LandingPage() {
             size="sm"
             borderWidth={colorMode === 'dark' ? '2px' : '0px'}
             borderColor="gray.200"
+            title="GUIs list"
           />
           <MenuList>
             {ROUTES.map((route) => {
@@ -69,7 +70,7 @@ export default function LandingPage() {
           target="_blank"
           rel="noopener noreferrer"
           mr="6">
-          <GithubIcon boxSize="8" />
+          <GithubIcon boxSize="8" title="GitHub repository" />
         </Link>
         <DarkModeToggle
           onChange={(isDarkMode) =>

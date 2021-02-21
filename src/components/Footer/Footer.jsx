@@ -16,9 +16,8 @@ export default function Footer() {
             href="https://github.com/abhimanyuPathania"
             target="_blank"
             rel="noopener noreferrer"
-            textDecoration="none"
-            border="0px">
-            <Text as="span" color="teal.400" fontWeight="bold">
+            color="teal.400">
+            <Text as="span" fontWeight="bold">
               Abhimanyu Pathania
             </Text>
           </Link>
@@ -28,7 +27,7 @@ export default function Footer() {
           target="_blank"
           rel="noopener noreferrer"
           ml="2">
-          <GithubIcon boxSize="5" />
+          <GithubIcon boxSize="5" title="GitHub profile" />
         </Link>
       </Flex>
     </Box>

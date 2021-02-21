@@ -1,4 +1,14 @@
-import { Box, Heading, Text, UnorderedList, ListItem } from '@chakra-ui/react';
+import {
+  Box,
+  Heading,
+  Text,
+  UnorderedList,
+  ListItem,
+  Link,
+} from '@chakra-ui/react';
+import { Link as RouterLink } from 'react-router-dom';
+import { ChevronRightIcon } from '@chakra-ui/icons';
+import { ROUTES } from '../commons/routesConfig';
 
 import Blockquote from '../components/Blockquote/Blockquote';
 import ExternalLink from '../components/ExternalLink/ExternalLink';
@@ -6,13 +16,13 @@ import ExternalLink from '../components/ExternalLink/ExternalLink';
 export default function LandingPage() {
   return (
     <Box>
-      <Heading mb="8">Seven GUI Tasks</Heading>
-      <Text mb="4">
+      <Heading mb="6">Seven GUI Tasks</Heading>
+      <Text mb="2">
         7 GUIs is a popular list of seven user interface development tasks.
         These tasks try to cover many challenges faced in UI development.
         Quoting the author of tasks list:
       </Text>
-      <Blockquote mb="6">
+      <Blockquote mb="2">
         There are countless GUI toolkits in different languages and with diverse
         approaches to GUI development. Yet, diligent comparisons between them
         are rare. Whereas in a traditional benchmark competing implementations
@@ -52,7 +62,7 @@ export default function LandingPage() {
           </ListItem>
         </UnorderedList>
       </Box>
-      <Text>
+      <Text mb="2">
         The goal of this activity was to learn using{' '}
         <ExternalLink href="https://en.wikipedia.org/wiki/Finite-state_machine">
           finite state machines
@@ -66,6 +76,15 @@ export default function LandingPage() {
         </ExternalLink>
         .
       </Text>
+      <Box>
+        <Link
+          as={RouterLink}
+          to={ROUTES[0].path}
+          fontWeight="bold"
+          fontSize="lg">
+          Start here <ChevronRightIcon />
+        </Link>
+      </Box>
     </Box>
   );
 }

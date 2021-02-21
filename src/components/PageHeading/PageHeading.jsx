@@ -5,7 +5,6 @@ function PageHeading(props) {
   const { routeConfig, ...otherProps } = props;
   return (
     <Heading
-      mb="6"
       {...otherProps}>{`${routeConfig.no}. ${routeConfig.label}`}</Heading>
   );
 }
