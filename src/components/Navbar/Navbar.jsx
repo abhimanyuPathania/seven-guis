@@ -13,6 +13,7 @@ import DarkModeToggle from 'react-dark-mode-toggle';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 
 import Logo from '../Logo/Logo';
+import GithubIcon from '../GithubIcon/GithubIcon';
 import { ROUTES } from '../../commons/routesConfig';
 
 export default function LandingPage() {
@@ -41,6 +42,8 @@ export default function LandingPage() {
             aria-label="Options"
             icon={<ChevronDownIcon />}
             size="sm"
+            borderWidth={colorMode === 'dark' ? '2px' : '0px'}
+            borderColor="gray.200"
           />
           <MenuList>
             {ROUTES.map((route) => {
@@ -59,13 +62,22 @@ export default function LandingPage() {
           </MenuList>
         </Menu>
       </Flex>
-      <DarkModeToggle
-        onChange={(isDarkMode) =>
-          toggleColorMode(isDarkMode ? 'dark' : 'light')
-        }
-        checked={colorMode === 'dark'}
-        size={50}
-      />
+      <Flex align="center">
+        <Link
+          href="https://github.com/abhimanyuPathania/seven-guis"
+          target="_blank"
+          rel="noopener noreferrer"
+          mr="6">
+          <GithubIcon boxSize="8" />
+        </Link>
+        <DarkModeToggle
+          onChange={(isDarkMode) =>
+            toggleColorMode(isDarkMode ? 'dark' : 'light')
+          }
+          checked={colorMode === 'dark'}
+          size={50}
+        />
+      </Flex>
     </Flex>
   );
 }
