@@ -16,7 +16,7 @@ function App() {
           marginTop="45px"
           mx="auto"
           py="8"
-          width={{ md: '90%', lg: '55%' }}
+          width={{ md: '90%', lg: '60%' }}
           maxW={{ lg: '800px' }}
           px={{ base: '4', sm: '6' }}>
           <Switch>

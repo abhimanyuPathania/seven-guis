@@ -11,8 +11,7 @@ function Blockquote(props) {
       color={colorMode === 'dark' ? 'gray.400' : 'gray.500'}
       borderLeftWidth="4px"
       borderColor={colorMode === 'dark' ? 'gray.700' : 'gray.200'}
-      paddingLeft="4"
-      mb="8">
+      paddingLeft="4">
       {children}
     </chakra.blockquote>
   );

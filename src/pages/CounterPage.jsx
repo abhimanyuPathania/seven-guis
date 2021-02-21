@@ -11,6 +11,7 @@ import {
 import counterMachine, { counterActions } from '../machines/counter';
 import PageHeader from '../components/PageHeader/PageHeader';
 import * as shapes from '../commons/shapes';
+import { boxWrapperStyles } from '../commons/enums';
 
 function CounterPage(props) {
   const { routeConfig } = props;
@@ -20,16 +21,11 @@ function CounterPage(props) {
     <Box>
       <PageHeader routeConfig={routeConfig} />
       <Box maxW="lg" mx="auto">
-        <Box
-          padding="3"
-          mt="3"
-          borderColor="gray.200"
-          borderWidth="1px"
-          borderRadius="md">
+        <Box mt="3" {...boxWrapperStyles}>
           <Box>
             <FormControl id="email">
               <FormLabel>Count</FormLabel>
-              <Input variant="filled" value={current.context.count} disabled />
+              <Input value={current.context.count} disabled />
             </FormControl>
           </Box>
           <Stack

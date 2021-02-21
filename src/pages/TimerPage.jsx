@@ -16,6 +16,7 @@ import {
 import timerMachine, { timerActions } from '../machines/timer';
 import PageHeader from '../components/PageHeader/PageHeader';
 import * as shapes from '../commons/shapes';
+import { boxWrapperStyles } from '../commons/enums';
 
 function TimerPage(props) {
   const { routeConfig } = props;
@@ -28,7 +29,7 @@ function TimerPage(props) {
   return (
     <Box>
       <PageHeader routeConfig={routeConfig} />
-      <Stack spacing="6" borderWidth="1px" padding="4" borderRadius="md">
+      <Stack spacing="6" {...boxWrapperStyles}>
         <Text
           fontSize="2xl"
           fontWeight="bold"

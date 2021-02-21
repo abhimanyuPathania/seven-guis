@@ -37,6 +37,7 @@ import flightBookerMachine, {
 } from '../machines/flightBooker';
 import PageHeader from '../components/PageHeader/PageHeader';
 import * as shapes from '../commons/shapes';
+import { boxWrapperStyles } from '../commons/enums';
 import '../components/DatePicker/datePicker.css';
 
 function FlightBookerPage(props) {
@@ -120,12 +121,7 @@ function FlightBookerPage(props) {
     <Box>
       <PageHeader routeConfig={routeConfig} />
       <Box maxW="md" mx="auto">
-        <Box
-          borderColor="gray.200"
-          borderWidth="1px"
-          borderRadius="md"
-          w="100%"
-          p="4">
+        <Box {...boxWrapperStyles} w="100%">
           <Stack spacing="4">
             <FormControl id="tripType">
               <FormLabel>Select Trip Type</FormLabel>
@@ -178,7 +174,6 @@ function FlightBookerPage(props) {
             <Stack direction="row" spacing="4">
               <Button
                 colorScheme="teal"
-                size="sm"
                 variant="outline"
                 flex="1"
                 onClick={() => send(flightBookerActions.RESET)}>
@@ -186,7 +181,6 @@ function FlightBookerPage(props) {
               </Button>
               <Button
                 colorScheme="teal"
-                size="sm"
                 flex="1"
                 onClick={() => send(flightBookerActions.SUBMIT)}
                 disabled={!canSubmit(context)}>

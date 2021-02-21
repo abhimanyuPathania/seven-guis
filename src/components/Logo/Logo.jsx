@@ -4,7 +4,7 @@ export default function Logo() {
   return (
     <Box>
       <Text as="span" fontSize="xl" fontWeight="bold">
-        7 GUIs
+        Seven GUIs
       </Text>
     </Box>
   );

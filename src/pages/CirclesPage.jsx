@@ -12,6 +12,7 @@ import circlesMachine, {
 } from '../machines/circles';
 import PageHeader from '../components/PageHeader/PageHeader';
 import * as shapes from '../commons/shapes';
+import { boxWrapperStyles } from '../commons/enums';
 
 function CirclesPage(props) {
   const { routeConfig } = props;
@@ -49,7 +50,7 @@ function CirclesPage(props) {
     <Box>
       <PageHeader routeConfig={routeConfig} />
       <Box maxW="lg" mx="auto">
-        <Stack spacing="6" borderWidth="1px" padding="4" borderRadius="md">
+        <Stack spacing="6" {...boxWrapperStyles}>
           <Box
             borderRadius="md"
             borderWidth="1px"

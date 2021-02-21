@@ -21,6 +21,7 @@ import crudMachine, {
 } from '../machines/crud';
 import PageHeader from '../components/PageHeader/PageHeader';
 import * as shapes from '../commons/shapes';
+import { boxWrapperStyles } from '../commons/enums';
 
 function CrudPage(props) {
   const { routeConfig } = props;
@@ -49,7 +50,7 @@ function CrudPage(props) {
     <Box>
       <PageHeader routeConfig={routeConfig} />
       <Box maxW="xl" mx="auto">
-        <Stack spacing="4" borderWidth="1px" padding="4" borderRadius="md">
+        <Stack spacing="4" {...boxWrapperStyles}>
           <FormControl id="search">
             <FormLabel>Search</FormLabel>
             <Input

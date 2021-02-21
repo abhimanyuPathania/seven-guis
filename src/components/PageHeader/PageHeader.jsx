@@ -8,7 +8,7 @@ import * as shapes from '../../commons/shapes';
 function PageHeader(props) {
   const { routeConfig, ...otherProps } = props;
   return (
-    <Box {...otherProps}>
+    <Box mb="8" {...otherProps}>
       <PageHeading routeConfig={routeConfig} />
       <PageHeaderLink routeConfig={routeConfig} />
       <Blockquote cite={routeConfig.externalLink}>
