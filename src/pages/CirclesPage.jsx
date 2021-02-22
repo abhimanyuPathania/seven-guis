@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { useMachine } from '@xstate/react';
 import { AnimatePresence } from 'framer-motion';
 import { Box, Button, Stack, useColorMode } from '@chakra-ui/react';
@@ -23,21 +23,13 @@ function CirclesPage(props) {
     context: { circles },
   } = current;
   const canvasDivRef = useRef(null);
-  const canvasBoundingRef = useRef(null);
-
-  useEffect(() => {
-    if (!canvasDivRef.current || canvasBoundingRef.current) return;
-    canvasBoundingRef.current = canvasDivRef.current.getBoundingClientRect();
-  }, []);
 
   function onCanvasClick(event) {
-    const { current: canvasBoundingRect } = canvasBoundingRef;
     const { current: canvasDiv } = canvasDivRef;
 
-    if (!(canvasBoundingRect && canvasDiv && event.target === canvasDiv))
-      return;
+    if (!(canvasDiv && event.target === canvasDiv)) return;
 
-    // relative to canvas div
+    const canvasBoundingRect = canvasDiv.getBoundingClientRect();
     const { clientX = 0, clientY = 0 } = event;
     send({
       type: circlesActions.DRAW,
