@@ -6,7 +6,7 @@ import Flatpickr from 'react-flatpickr';
 function DateTimePicker(props) {
   /**
    * Trying to make this work controlled `value` and `render` was
-   * causing issue internal custom input won't render properly `value` field
+   * causing an issue where, internal custom input won't render properly `value` field
    */
   const { label, value, options, disabled, ...otherProps } = props;
 
@@ -14,6 +14,7 @@ function DateTimePicker(props) {
     <Flatpickr
       options={{
         dateFormat: 'J M, Y',
+        disableMobile: true,
         ...options,
       }}
       render={({ value, ...props }, ref) => {
