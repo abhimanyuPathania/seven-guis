@@ -4,7 +4,11 @@ import { Input, FormControl, FormLabel } from '@chakra-ui/react';
 import Flatpickr from 'react-flatpickr';
 
 function DateTimePicker(props) {
-  const { label, options, disabled, ...otherProps } = props;
+  /**
+   * Trying to make this work controlled `value` and `render` was
+   * causing issue internal custom input won't render properly `value` field
+   */
+  const { label, value, options, disabled, ...otherProps } = props;
 
   return (
     <Flatpickr
@@ -12,15 +16,14 @@ function DateTimePicker(props) {
         dateFormat: 'J M, Y',
         ...options,
       }}
-      render={({ defaultValue, value, ...props }, ref) => {
+      render={({ value, ...props }, ref) => {
         return (
           <FormControl>
             <FormLabel htmlFor="travel-date">{label}</FormLabel>
             <Input
               value={value}
-              defaultValue={defaultValue}
-              readOnly
               disabled={disabled}
+              readOnly
               {...props}
               ref={ref}
             />
