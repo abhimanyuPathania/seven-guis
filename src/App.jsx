@@ -1,6 +1,6 @@
 import { ChakraProvider, Box, Flex } from '@chakra-ui/react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import 'react-datepicker/dist/react-datepicker.css';
+import 'flatpickr/dist/themes/dark.css';
 
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';

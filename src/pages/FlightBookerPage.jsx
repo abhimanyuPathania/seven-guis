@@ -1,10 +1,9 @@
-import { forwardRef, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useMachine } from '@xstate/react';
 import {
   Box,
   Button,
   Stack,
-  Input,
   FormControl,
   FormLabel,
   Select,
@@ -26,7 +25,6 @@ import {
   Text,
   useColorMode,
 } from '@chakra-ui/react';
-import ReactDatePicker from 'react-datepicker';
 
 import flightBookerMachine, {
   flightBookerActions,
@@ -38,7 +36,7 @@ import flightBookerMachine, {
 import PageHeader from '../components/PageHeader/PageHeader';
 import * as shapes from '../commons/shapes';
 import { boxWrapperStyles } from '../commons/enums';
-import '../components/DatePicker/datePicker.css';
+import DateTimePicker from '../components/DateTimePicker/DateTimePicker';
 
 function FlightBookerPage(props) {
   const { routeConfig } = props;
@@ -46,10 +44,10 @@ function FlightBookerPage(props) {
   const { context, value } = current;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
+  const travelDatePickerRef = useRef(null);
+  const returnDatePickerRef = useRef(null);
   // Required since table is being rendered in modal whose bgc is shade lighter in dark mode
   const tableBorderColor = colorMode === 'dark' ? 'gray.600' : 'gray.100';
-
-  const dateFormat = 'do MMM, yyyy';
 
   useEffect(() => {
     if (value === 'final') onOpen();
@@ -57,16 +55,22 @@ function FlightBookerPage(props) {
     if (value === 'editing' && isOpen) onClose();
   }, [value]);
 
-  function closeSubmitModal() {
-    send(flightBookerActions.RESET);
-    onClose();
-  }
-
   function getFormattedDate(date) {
     if (!date) return '';
-
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
+  }
+
+  function reset() {
+    if (travelDatePickerRef.current) travelDatePickerRef.current.clear();
+    if (returnDatePickerRef.current) returnDatePickerRef.current.clear();
+
+    send(flightBookerActions.RESET);
+  }
+
+  function closeSubmitModal() {
+    reset();
+    onClose();
   }
 
   function renderTableBody() {
@@ -91,31 +95,6 @@ function FlightBookerPage(props) {
       </Tbody>
     );
   }
-
-  const TravelDateInput = forwardRef(({ value, onClick }, ref) => (
-    <FormControl>
-      <FormLabel htmlFor="travel-date">Travel Date</FormLabel>
-      <Input value={value} onClick={onClick} readOnly ref={ref} />
-    </FormControl>
-  ));
-
-  const ReturnDateInput = forwardRef(({ value, onClick }, ref) => {
-    const disabled = !canSetReturnDate(context);
-
-    return (
-      <FormControl>
-        <FormLabel htmlFor="return-date">Return Date</FormLabel>
-        <Input
-          value={value}
-          onClick={onClick}
-          readOnly
-          ref={ref}
-          variant={disabled ? 'filled' : 'outline'}
-          disabled={disabled}
-        />
-      </FormControl>
-    );
-  });
 
   return (
     <Box>
@@ -142,33 +121,38 @@ function FlightBookerPage(props) {
               </Select>
             </FormControl>
             <Box>
-              <ReactDatePicker
-                id="travel-date"
-                selected={context.travelDate}
-                onChange={(date) =>
+              <DateTimePicker
+                label="Travel Date"
+                options={{
+                  minDate: new Date(),
+                }}
+                onChange={([travelDate]) => {
                   send({
                     type: flightBookerActions.SET_TRAVEL_DATE,
-                    value: date,
-                  })
+                    value: travelDate,
+                  });
+                }}
+                onCreate={(pickerRef) =>
+                  (travelDatePickerRef.current = pickerRef)
                 }
-                customInput={<TravelDateInput />}
-                dateFormat={dateFormat}
-                minDate={new Date()}
               />
             </Box>
             <Box>
-              <ReactDatePicker
-                id="return-date"
-                selected={context.returnDate}
-                onChange={(date) =>
+              <DateTimePicker
+                label="Return Date"
+                options={{
+                  minDate: context.travelDate,
+                }}
+                disabled={!canSetReturnDate(context)}
+                onChange={([returnDate]) =>
                   send({
                     type: flightBookerActions.SET_RETURN_DATE,
-                    value: date,
+                    value: returnDate,
                   })
                 }
-                minDate={context.travelDate}
-                customInput={<ReturnDateInput />}
-                dateFormat={dateFormat}
+                onCreate={(pickerRef) =>
+                  (returnDatePickerRef.current = pickerRef)
+                }
               />
             </Box>
             <Stack direction="row" spacing="4">
@@ -176,7 +160,7 @@ function FlightBookerPage(props) {
                 colorScheme="teal"
                 variant="outline"
                 flex="1"
-                onClick={() => send(flightBookerActions.RESET)}>
+                onClick={reset}>
                 Reset
               </Button>
               <Button
