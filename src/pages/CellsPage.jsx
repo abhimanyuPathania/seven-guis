@@ -1,5 +1,12 @@
 import { useMachine } from '@xstate/react';
-import { Box, SimpleGrid, Flex, useColorMode } from '@chakra-ui/react';
+import {
+  Box,
+  SimpleGrid,
+  Flex,
+  useColorMode,
+  Text,
+  Code,
+} from '@chakra-ui/react';
 
 import cellsMachine from '../machines/cells';
 import Cell from '../components/Cell/Cell';
@@ -82,6 +89,13 @@ function CellsPage(props) {
   return (
     <Box>
       <PageHeader routeConfig={routeConfig} />
+      <Text mb="4" fontSize="sm">
+        <Text as="span" fontWeight="bold">
+          Supported formulas
+        </Text>
+        : SUM (=sum) and AVERAGE (=avg). Example, <Code>=avg(a1:10)</Code>
+        will average cells a1 to a10.
+      </Text>
       <Box maxW="calc(100vw - 40px)" mx="auto" p="2">
         <Flex>
           <Flex direction="column" backgroundColor={headerBackgroundColor}>
